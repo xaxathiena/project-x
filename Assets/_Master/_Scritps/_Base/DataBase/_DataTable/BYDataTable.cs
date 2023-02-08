@@ -5,11 +5,17 @@ using System;
 using System.Reflection;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 // make file 
 public class BYDataTableOgrin: ScriptableObject
 {
-    public virtual void ImportData(string textData)
+    public virtual void ImportDataUsingNewtonJson(string textData)
+    {
+
+    }
+    public virtual void ImportDataUsingJsonUtility(string textData)
     {
 
     }
@@ -31,7 +37,7 @@ public abstract class ConfigCompare<T> : IComparer<T>
 // import data, sort, search 
 public abstract class BYDataTable <T>: BYDataTableOgrin where T: class
 {
-    public ConfigCompare<T> recordCompare;
+    protected ConfigCompare<T> recordCompare;
     [SerializeField]
     protected List<T> records;
 
@@ -43,10 +49,32 @@ public abstract class BYDataTable <T>: BYDataTableOgrin where T: class
 
     public abstract void InitComparison();
  
-    public override void ImportData(string textData)
+    public override void ImportDataUsingNewtonJson(string textData)
     {
+        //var dicData = ConvertCsvFileToJsonObject(textData);
+        //if (records != null)
+        //{
+        //    records.Clear();
+        //}
+        //else
+        //{
+        //    records = new List<T>();
+        //}
+        //Type type = typeof(T);
+        //BindingFlags flag = (BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+        //foreach (var e in dicData)
+        //{
+        //    T record = new T();
+        //    foreach (var item in e)
+        //    {
+        //        var field = type.GetField(item.Key, flag);
+        //        field.SetValue(item.Value, record);
+        //    }
+        //    records.Add(record);
+        //}
+        //var test = ConvertCsvFileToJsonObject(textData);
 
-        if(records!=null)
+         if (records!=null)
         {
             records.Clear();
         }
@@ -55,35 +83,105 @@ public abstract class BYDataTable <T>: BYDataTableOgrin where T: class
             records = new List<T>();
         }
         List<List<string>> grid = SplitCSVFile(textData);
-        Debug.Log("SplitCSVFile count: " + grid.Count);
+
         Type type = typeof(T);
     
         FieldInfo[] members = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-
+       
         for (int i=1;i<grid.Count;i++)
         {
+            if (grid[i].Count <= 0)
+                continue;
+            string jsonText = string.Empty;
+            jsonText = "{";
+            for (int j = 0; j < members.Length; j++)
+            {
+                FieldInfo fieldInfo = members[j];
+                string data = "0";
+                if (j>0)
+                {
+                    jsonText += ",";
+                }
+                if (grid[i].Count <= j)
+                {
+                    data = default;
+                }
+                else
+                {
+                    data = grid[i][j];
+                }
+
+                jsonText += "\"" + fieldInfo.Name + "\":" + "\"" + data+ "\"";
+            }
+            jsonText += "}";
+
+            T dataRecord = JsonConvert.DeserializeObject<T>(jsonText, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                //DefaultValueHandling = DefaultValueHandling.Ignore,
+                Error = HandleDeserializationError
+            });
+            records.Add(dataRecord);
+        }
+        records.Sort(recordCompare);
+    }
+    public override void ImportDataUsingJsonUtility(string textData)
+    {
+
+        if (records != null)
+        {
+            records.Clear();
+        }
+        else
+        {
+            records = new List<T>();
+        }
+        List<List<string>> grid = SplitCSVFile(textData);
+
+        Type type = typeof(T);
+
+        FieldInfo[] members = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+        for (int i = 1; i < grid.Count; i++)
+        {
+            if (grid[i].Count <= 0)
+                continue;
             string jsonText = string.Empty;
             jsonText = "{";
 
             for (int j = 0; j < members.Length; j++)
             {
                 FieldInfo fieldInfo = members[j];
-              
-                if (j>0)
+                string data = string.Empty;
+                if (j > 0)
                 {
                     jsonText += ",";
                 }
+                if (grid[i].Count <= j)
+                {
+                    data = default;
+                }
+                else
+                {
+                    data = grid[i][j];
+                }
 
-                jsonText += "\"" + fieldInfo.Name + "\":" + "\"" + grid[i][j] + "\"";
+                jsonText += "\"" + fieldInfo.Name + "\":" + "\"" + data + "\"";
             }
             jsonText += "}";
-           
             T dataRecord = JsonUtility.FromJson<T>(jsonText);
             records.Add(dataRecord);
         }
         records.Sort(recordCompare);
     }
-
+    public static void HandleDeserializationError(object sender, ErrorEventArgs errorArgs)
+    {
+        if(errorArgs.ErrorContext.Error is FormatException error)
+        {
+            Debug.LogError(error.Message);
+        }
+        errorArgs.ErrorContext.Handled = true;
+    }
     public override string GetCSVData()
     {
         string s = string.Empty;

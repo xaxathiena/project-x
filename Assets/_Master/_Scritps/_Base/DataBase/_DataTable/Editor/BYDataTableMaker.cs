@@ -5,8 +5,8 @@ using System.IO;
 
 public class BYDataTableMaker : MonoBehaviour
 {
-    [MenuItem("Assets/BY/Make Data by CSV")]
-    public static void CreateAsset()
+    [MenuItem("Assets/BY/StandAlone/Make Data by CSV")]
+    public static void CreateStandAloneAsset()
     {
         foreach (UnityEngine.Object obj in Selection.objects)
         {
@@ -18,12 +18,35 @@ public class BYDataTableMaker : MonoBehaviour
             if (scriptableTable == null)
                 return;
 
-            AssetDatabase.CreateAsset(scriptableTable, "Assets/Resources/DataTable/" + tableName + ".asset");
+            AssetDatabase.CreateAsset(scriptableTable, "Assets/_Master/_Data/_StandAlone/DataTable/" + tableName + ".asset");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
             BYDataTableOgrin by = (BYDataTableOgrin)scriptableTable;
-            by.ImportData(csvFile.text);
+            by.ImportDataUsingNewtonJson(csvFile.text);
+
+            EditorUtility.SetDirty(by);
+        }
+    }
+    [MenuItem("Assets/BY/Mobile/Make Data by CSV")]
+    public static void CreateMobileAsset()
+    {
+        foreach (UnityEngine.Object obj in Selection.objects)
+        {
+            TextAsset csvFile = (TextAsset)obj;
+            string tableName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(csvFile));
+            ScriptableObject scriptableTable = ScriptableObject.CreateInstance(tableName);
+
+
+            if (scriptableTable == null)
+                return;
+
+            AssetDatabase.CreateAsset(scriptableTable, "Assets/_Master/_Data/_Mobile/DataTable/" + tableName + ".asset");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            BYDataTableOgrin by = (BYDataTableOgrin)scriptableTable;
+            by.ImportDataUsingNewtonJson(csvFile.text);
 
             EditorUtility.SetDirty(by);
         }
