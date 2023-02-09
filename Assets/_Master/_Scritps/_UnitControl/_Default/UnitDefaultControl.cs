@@ -2,24 +2,28 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using StateMachine;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Serialization;
 
 public class UnitDefaultControl : FSMSystem
 {
     [Header("Setup state")]
-    [SerializeField] protected UnitDefaultSpawnState spawState;
-    [SerializeField] protected UnitDefaultIdleState idle;
-    [SerializeField] protected UnitDefaultMoveState move;
-    [SerializeField] protected UnitDefaultAttackState attack;
-    [SerializeField] protected UnitDefaultDeadState dead;
-
+    public UnitDefaultSpawnState spawState;
+    public UnitDefaultIdleState idle;
+    public UnitDefaultMoveState move;
+    public UnitDefaultAttackState attack;
+    public UnitDefaultDeadState dead;
     [Space(10)] 
     [SerializeField] private Animator amin;
+    public NavMeshAgent agent;
+    public NavMeshObstacle obsTackle;
     public UnitDefaultDataBinding dataBinding;
-
-    
-    
+    public CharacterController controller;
+    public float attackRange = 3;
+    public float detectRange = 10;
+    public float rof = 0.3f;
     private void Start()
     {
         dataBinding = new UnitDefaultDataBinding();
@@ -43,8 +47,8 @@ public class UnitDefaultControl : FSMSystem
         
         dead = new UnitDefaultDeadState();
         dead.parent = this;
-        
         RegisterState(dead);
+        
         SetEntryState(spawState);
         SystemStart();
     }
@@ -78,5 +82,15 @@ public class UnitDefaultControl : FSMSystem
     public override void SystemFixedUpdate()
     {
         dataBinding.OnFixedUpdate();
+    }
+    void OnDrawGizmos()
+    {
+        // Draw a yellow sphere at the transform's position
+        Gizmos.color = Color.gray;
+        Gizmos.DrawWireSphere(transform.position, detectRange);
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, move.nextPos);
     }
 }

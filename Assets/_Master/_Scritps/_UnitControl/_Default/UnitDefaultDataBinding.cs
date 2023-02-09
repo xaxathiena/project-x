@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct  UnitDefaultDataBinding
+public class  UnitDefaultDataBinding
 { 
     private Animator animator { get; set; }
     private int key_Speed;

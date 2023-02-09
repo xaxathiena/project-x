@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using StateMachine;
 using UnityEngine;
 [System.Serializable]
-public struct UnitDefaultIdleState : IState
+public class  UnitDefaultIdleState : IState
 {
-    public UnitDefaultControl parent;
+    [HideInInspector] public UnitDefaultControl parent;
 
     private float currentTime;
     
     public bool canTransitionToSelf { get; }
-    public void Initialize(FSMSystem parent)
+    public void Initialize(FSMSystem parent, params object[] datas)
     {
         currentTime = 0f;
     }
@@ -20,6 +20,8 @@ public struct UnitDefaultIdleState : IState
         currentTime = 0f;
         Debug.Log("Enter spawn");
         parent.dataBinding.Speed = 0;
+        parent.agent.enabled = false;
+        parent.obsTackle.enabled = true;
     }
 
     public void OnEnterFromSameState(params object[] data)
@@ -28,8 +30,7 @@ public struct UnitDefaultIdleState : IState
 
     public void OnUpdate()
     {
-        currentTime+= Time.deltaTime;
-        if(currentTime > 1) parent.GotoMove();
+        parent.GotoMove();
     }
 
     public void OnLateUpdate()

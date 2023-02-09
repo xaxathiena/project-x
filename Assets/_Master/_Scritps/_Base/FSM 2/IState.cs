@@ -6,7 +6,7 @@ namespace StateMachine
     public interface IState 
     {
         bool canTransitionToSelf { get; }
-        void Initialize(FSMSystem parent);
+        void Initialize(FSMSystem parent, params object[] datas);
         void OnEnter(params object[] data);
         void OnEnterFromSameState(params object[] data);
         void OnUpdate();

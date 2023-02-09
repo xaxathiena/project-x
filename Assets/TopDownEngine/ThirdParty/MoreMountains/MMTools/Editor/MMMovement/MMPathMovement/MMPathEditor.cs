@@ -46,15 +46,15 @@ namespace MoreMountains.Tools
 				Handles.Label(t.GetOriginalTransformPosition()+t.PathElements[i].PathElementPosition+(Vector3.down*0.4f)+(Vector3.right*0.4f), ""+i,style);
 
 				// draws a movable handle
-				var fmh_49_57_638114453205953581 = Quaternion.identity; Vector3 newPoint = Handles.FreeMoveHandle(oldPoint,.5f,new Vector3(.25f,.25f,.25f),Handles.CircleHandleCap);
-				newPoint = ApplyAxisLock(oldPoint, newPoint);
-				
-				// records changes
-				if (EditorGUI.EndChangeCheck())
-				{
-					Undo.RecordObject(target, "Free Move Handle");
-					t.PathElements[i].PathElementPosition = newPoint - t.GetOriginalTransformPosition();
-				}
+				// var fmh_49_57_638114453205953581 = Quaternion.identity; Vector3 newPoint = Handles.FreeMoveHandle(oldPoint,.5f,new Vector3(.25f,.25f,.25f),Handles.CircleHandleCap);
+				// newPoint = ApplyAxisLock(oldPoint, newPoint);
+				//
+				// // records changes
+				// if (EditorGUI.EndChangeCheck())
+				// {
+				// 	Undo.RecordObject(target, "Free Move Handle");
+				// 	t.PathElements[i].PathElementPosition = newPoint - t.GetOriginalTransformPosition();
+				// }
 			}	        
 		}
 

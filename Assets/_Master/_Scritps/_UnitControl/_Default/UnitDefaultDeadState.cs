@@ -2,14 +2,14 @@
 using UnityEngine;
 
 [System.Serializable]
-public struct UnitDefaultDeadState : IState
+public class  UnitDefaultDeadState : IState
 {
-    public UnitDefaultControl parent;
+    [HideInInspector] public UnitDefaultControl parent;
 
     private float currentTime;
     
     public bool canTransitionToSelf { get; }
-    public void Initialize(FSMSystem parent)
+    public void Initialize(FSMSystem parent, params object[] datas)
     {
         currentTime = 0f;
     }
@@ -19,6 +19,8 @@ public struct UnitDefaultDeadState : IState
         currentTime = 0f;
         Debug.Log("Enter spawn");
         parent.dataBinding.IsDead = true;
+        parent.agent.enabled = false;
+        parent.obsTackle.enabled = false;
     }
 
     public void OnEnterFromSameState(params object[] data)
