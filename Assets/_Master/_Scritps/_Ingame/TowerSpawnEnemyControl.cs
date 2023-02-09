@@ -13,7 +13,6 @@ public class TowerSpawnEnemyControl : MonoBehaviour
     {
         InGameManager.TimeToSpawnUnitsEvent += SpawnUnitHandle;
     }
-
     private void SpawnUnitHandle()
     {
         for (int i = 0; i < enemiesPositionSpawn.Length; i++)
@@ -21,6 +20,7 @@ public class TowerSpawnEnemyControl : MonoBehaviour
             var newUnit = Instantiate(prefabTest);
             newUnit.transform.position = enemiesPositionSpawn[i].position;
             newUnit.transform.forward = enemiesPositionSpawn[i].right;
+            UnitsManager.instance.unitsEnemy.Add(newUnit.transform);
         }
     }
 }
