@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: CastBoltOverride
+  m_Controller: {fileID: 9100000, guid: a6271f7623a7b4b4d9f420b5afb9f578, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: 030cf5bd358cee3478cdc6f52fce5dce,
+      type: 3}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: 030cf5bd358cee3478cdc6f52fce5dce,
+      type: 3}
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: fb1efaab2876c86498dfe8b3462d245d,
+      type: 3}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: fb1efaab2876c86498dfe8b3462d245d,
+      type: 3}
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: b07843e7203f97548aa34608cda45aa5,
+      type: 3}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: b07843e7203f97548aa34608cda45aa5,
+      type: 3}
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: 9938606fdcd5f0d4e9c860bb8cb2124e,
+      type: 3}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: 9938606fdcd5f0d4e9c860bb8cb2124e,
+      type: 3}
+  - m_OriginalClip: {fileID: 1827226128182048838, guid: bc77e6e97b1d84d41b499b6c4f4d82e7,
+      type: 3}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: bc77e6e97b1d84d41b499b6c4f4d82e7,
+      type: 3}

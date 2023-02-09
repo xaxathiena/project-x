@@ -12,4 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33b82e6060951114e9251275d08f8d55, type: 3}
   m_Name: ConfigSpawnTower
   m_EditorClassIdentifier: 
-  records: []
+  records:
+  - id: 1
+    name: mainTower
+    idWaves: 01000000010000000100000001000000
+    attackRange: 100
+    dame: 100
+    dps: 200
+    heath: 10000

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   records:
   - id: 1
-    name: enemy1
+    name: CatBolt
     dame: 100
     dps: 200
     health: 1000
