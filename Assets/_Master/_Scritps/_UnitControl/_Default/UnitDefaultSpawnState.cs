@@ -16,7 +16,7 @@ public class  UnitDefaultSpawnState : IState
 
     public void OnEnter(params object[] data)
     {
-        parent.GotoIdle();
+        Debug.Log("enter spawn");
     }
 
     public void OnEnterFromSameState(params object[] data)
@@ -25,7 +25,11 @@ public class  UnitDefaultSpawnState : IState
 
     public void OnUpdate()
     {
-        
+        currentTime += Time.deltaTime;
+        if (currentTime > 3f)
+        {
+            parent.GotoIdle();
+        }
     }
 
     public void OnLateUpdate()

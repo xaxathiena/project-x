@@ -914,6 +914,7 @@ MonoBehaviour:
   move:
     parent: {fileID: 0}
     move: 0
+    nextPos: {x: 0, y: 0, z: 0}
   dead:
     parent: {fileID: 0}
   amin: {fileID: 7004452283649549403}
@@ -922,6 +923,7 @@ MonoBehaviour:
   controller: {fileID: 7033818572973575669}
   attackRange: 3
   detectRange: 10
+  rof: 0.3
 --- !u!143 &7033818572973575669
 CharacterController:
   m_ObjectHideFlags: 0
@@ -947,7 +949,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4368258841571714203}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.01
   m_Speed: 3.5
@@ -969,7 +971,7 @@ NavMeshObstacle:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4368258841571714203}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Shape: 0
   m_Extents: {x: 0.1, y: 1.05, z: 0.1}

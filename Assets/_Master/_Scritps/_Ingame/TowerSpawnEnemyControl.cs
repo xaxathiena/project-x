@@ -6,15 +6,21 @@ using UnityEngine;
 
 public class TowerSpawnEnemyControl : MonoBehaviour
 {
-    [SerializeField] private Transform enemiesPositionSpawn;
+    [SerializeField] private Transform[] enemiesPositionSpawn;
     [SerializeField] private GameObject prefabTest;
 
-    private void Update()
+    public void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        InGameManager.TimeToSpawnUnitsEvent += SpawnUnitHandle;
+    }
+
+    private void SpawnUnitHandle()
+    {
+        for (int i = 0; i < enemiesPositionSpawn.Length; i++)
         {
-            var newUnit = Instantiate(prefabTest, enemiesPositionSpawn);
-            //newUnit.
+            var newUnit = Instantiate(prefabTest);
+            newUnit.transform.position = enemiesPositionSpawn[i].position;
+            newUnit.transform.forward = enemiesPositionSpawn[i].right;
         }
     }
 }
