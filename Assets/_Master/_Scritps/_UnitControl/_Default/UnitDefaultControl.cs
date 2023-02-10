@@ -11,10 +11,10 @@ public class UnitDefaultControl : FSMSystem
 {
     [Header("Setup state")]
     public UnitDefaultSpawnState spawState;
-    public UnitDefaultIdleState idle;
-    public UnitDefaultMoveState move;
-    public UnitDefaultAttackState attack;
-    public UnitDefaultDeadState dead;
+    public UnitDefaultIdleState idleState;
+    public UnitDefaultMoveState moveState;
+    public UnitDefaultAttackState attackState;
+    public UnitDefaultDeadState deadState;
     [Space(10)] 
     [SerializeField] private Animator amin;
     public NavMeshAgent agent;
@@ -33,21 +33,21 @@ public class UnitDefaultControl : FSMSystem
         spawState.parent = this;
         RegisterState(spawState);
         
-        idle = new UnitDefaultIdleState();
-        idle.parent = this;
-        RegisterState(idle);
+        idleState = new UnitDefaultIdleState();
+        idleState.parent = this;
+        RegisterState(idleState);
         
-        move = new UnitDefaultMoveState();
-        move.parent = this;
-        RegisterState(move);
+        moveState = new UnitDefaultMoveState();
+        moveState.parent = this;
+        RegisterState(moveState);
         
-        attack = new UnitDefaultAttackState();
-        attack.parent = this;
-        RegisterState(attack);
+        attackState = new UnitDefaultAttackState();
+        attackState.parent = this;
+        RegisterState(attackState);
         
-        dead = new UnitDefaultDeadState();
-        dead.parent = this;
-        RegisterState(dead);
+        deadState = new UnitDefaultDeadState();
+        deadState.parent = this;
+        RegisterState(deadState);
         
         SetEntryState(spawState);
         SystemStart();
@@ -56,19 +56,19 @@ public class UnitDefaultControl : FSMSystem
 
     public void GotoIdle(params object[] data)
     {
-        GotoState(idle, data);
+        GotoState(idleState, data);
     }
     public void GotoMove(params object[] data)
     {
-        GotoState(move, data);
+        GotoState(moveState, data);
     }
     public void GotoDead(params object[] data)
     {
-        GotoState(dead, data);
+        GotoState(deadState, data);
     }
     public void GotoAttack(params object[] data)
     {
-        GotoState(attack, data);
+        GotoState(attackState, data);
     }
     public void GotoSpawn(params object[] data)
     {
@@ -86,11 +86,11 @@ public class UnitDefaultControl : FSMSystem
     void OnDrawGizmos()
     {
         // Draw a yellow sphere at the transform's position
-        Gizmos.color = Color.gray;
+        Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, detectRange);
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, move.nextPos);
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(moveState.targetPos, attackRange);
     }
 }

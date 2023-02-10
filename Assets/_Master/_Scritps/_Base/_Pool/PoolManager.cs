@@ -4,36 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PoolManager : MonoBehaviour
+public class PoolChunkManager<T> where T: MonoBehaviour
 {
-    public List<CustomPool> pools;
-    public static Dictionary<string, CustomPool > dicPool = new Dictionary<string, CustomPool>();
-    private static Dictionary<string, List<string>> dicPoolLoaded = new Dictionary<string, List<string>>();
-    // Start is called before the first frame update
+    public Dictionary<string, CustomPool<T> > dicPool = new Dictionary<string, CustomPool<T>>();
+    private Dictionary<string, List<string>> dicPoolLoaded = new Dictionary<string, List<string>>();
     
-    void Start()
-    {
-        SceneManager.sceneUnloaded += OnSceneUnloaded;
-        //foreach(CustomPool pool in pools)
-        //{
-        //    CreatePrefab(pool);
-        //    dicPool[pool.namePool] = pool;
-        //    //dicPool.Add(pool.namePool, pool);
-        //}
-    }
-
-    private void OnSceneUnloaded(Scene scene)
-    {
-        if(dicPoolLoaded.ContainsKey(scene.name))
-        {
-            foreach (var e in dicPoolLoaded[scene.name])
-            {
-                ReleasePool(e);
-            }
-            dicPoolLoaded.Remove(scene.name);
-        }
-    }
-    public static bool CheckExist(string namePool)
+    public bool CheckExist(string namePool)
     {
         if (dicPool.ContainsKey(namePool))
         {
@@ -44,23 +20,17 @@ public class PoolManager : MonoBehaviour
 #endif
         return false;
     }
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="pool"></param>
-    /// <param name="isOverride"></param>
-    /// <param name="isUnloadWhenSceneUnload">set it true if it never unload</param>
-    public static void AddNewPool(CustomPool pool, bool isUnloadWhenSceneUnload = true)
+    public void AddNewPool(CustomPool<T> pool, bool isUnloadWhenSceneUnload = true)
     {
         if(!dicPool.ContainsKey(pool.namePool))
         {
             for (int i = 0; i < pool.total; i++)
             {
-                Transform trans = Instantiate(pool.prefab, Vector3.zero, Quaternion.identity, pool.parent);
-                pool.elements.Add(trans);
+                T trans = MonoBehaviour.Instantiate(pool.prefab, Vector3.zero, Quaternion.identity, pool.parent);
+                pool.elements.Add(trans.GetComponent<T>());
                 //trans.SetParent(pool.parent);
                 trans.gameObject.SetActive(false);
-                pool.onInit?.Invoke(trans);
+                pool.onInit?.Invoke(trans.transform);
             }
             dicPool[pool.namePool] = pool;
         }
@@ -76,18 +46,18 @@ public class PoolManager : MonoBehaviour
     /// <param name="isOverride"></param>
     /// <param name="isUnloadWhenSceneUnload">set it true if it never unload</param>
 
-    public static List<T> AddNewPool<T>(CustomPool pool, bool isUnloadWhenSceneUnload = true)
+    public List<T> AddNewPoolThenGet(CustomPool<T> pool, bool isUnloadWhenSceneUnload = true)
     {
         List<T> rs = new List<T>();
         if (!dicPool.ContainsKey(pool.namePool))
         {
             for (int i = 0; i < pool.total; i++)
             {
-                Transform trans = Instantiate(pool.prefab, Vector3.zero, Quaternion.identity, pool.parent);
-                pool.elements.Add(trans);
+                T trans =MonoBehaviour.Instantiate(pool.prefab, Vector3.zero, Quaternion.identity, pool.parent);
+                pool.elements.Add(trans.GetComponent<T>());
                 rs.Add(trans.GetComponent<T>());
                 trans.gameObject.SetActive(false);
-                pool.onInit?.Invoke(trans);
+                pool.onInit?.Invoke(trans.transform);
             }
             dicPool[pool.namePool] = pool;
         }
@@ -102,7 +72,7 @@ public class PoolManager : MonoBehaviour
         return rs;
 
     }
-    public static CustomPool GetCustomPool(string namePool, Transform parent = null)
+    public CustomPool<T> GetCustomPool(string namePool, Transform parent = null)
     {
         if (dicPool.ContainsKey(namePool))
         {
@@ -115,7 +85,7 @@ public class PoolManager : MonoBehaviour
 #endif
         return null;
     }
-    public static Transform GetPool(string namePool, Transform parent = null)
+    public T GetPool(string namePool, Transform parent = null)
     {
         if (dicPool.ContainsKey(namePool))
         {
@@ -126,7 +96,7 @@ public class PoolManager : MonoBehaviour
 #endif
         return null;
     }
-    public static T GetPool<T>(string namePool, Transform parent = null)
+    public T GetPool<T>(string namePool, Transform parent = null)
     {
         if (dicPool.ContainsKey(namePool))
         {
@@ -137,34 +107,23 @@ public class PoolManager : MonoBehaviour
 #endif
         return default;
     }
-//     public static T GetAsPool<T>(string namePool, Transform parent = null)
-//     {
-//         if (dicPool.ContainsKey(namePool))
-//         {
-//             return ((T)dicPool[namePool].OnSpawned(parent));
-//         }
-// #if UNITY_EDITOR
-//         //Debug.LogErrorFormat("There is no pool name {0}", namePool);
-// #endif
-//         return default;
-//     }
-    public static bool IsHasPool(CustomPool pool)
+    public bool IsHasPool(CustomPool<T> pool)
     {
         return dicPool.ContainsKey(pool.namePool);
     }
-    public static bool IsHasPool(string namePool)
+    public bool IsHasPool(string namePool)
     {
         return dicPool.ContainsKey(namePool);
     }
-    public static void ExpandPool(string namePool, int number = 1)
+    public void ExpandPool(string namePool, int number = 1)
     {
         if(dicPool.ContainsKey(namePool))
         {
             var pool = dicPool[namePool];
             for (int i = 0; i < number; i++)
             {
-                Transform trans = Instantiate(pool.prefab, Vector3.zero, Quaternion.identity);
-                pool.elements.Add(trans);
+                T trans = MonoBehaviour.Instantiate(pool.prefab, Vector3.zero, Quaternion.identity);
+                pool.elements.Add(trans.GetComponent<T>());
                 trans.gameObject.SetActive(false);
             }
         }
@@ -175,16 +134,16 @@ public class PoolManager : MonoBehaviour
         }
 #endif
     }
-    public void CreatePrefab(CustomPool pool )
+    public void CreatePrefab(CustomPool<T> pool )
     {
         for (int i = 0; i < pool.total; i++)
         {
-            Transform trans = Instantiate(pool.prefab, Vector3.zero, Quaternion.identity);
-            pool.elements.Add(trans);
+            T trans =  MonoBehaviour.Instantiate(pool.prefab, Vector3.zero, Quaternion.identity);
+            pool.elements.Add(trans.GetComponent<T>());
             trans.gameObject.SetActive(false);
         }
     }
-    public static void ReleasePool(string poolName)
+    public void ReleasePool(string poolName)
     {
         if(dicPool.ContainsKey(poolName))
         {
@@ -203,7 +162,7 @@ public class PoolManager : MonoBehaviour
             dicPool.Remove(poolName);
         }
     }
-    public static void DisablePool(string poolName)
+    public void DisablePool(string poolName)
     {
         if (dicPool.ContainsKey(poolName))
         {
@@ -211,7 +170,7 @@ public class PoolManager : MonoBehaviour
             pool.DespawnAll();
         }
     }
-    public static void DespawnPool(string poolName, Transform trans)
+    public void DespawnPool(string poolName, T trans)
     {
         if(dicPool.ContainsKey(poolName))
         {
@@ -223,6 +182,44 @@ public class PoolManager : MonoBehaviour
             Debug.LogErrorFormat("There is no pool name {0}", poolName);
         }
 #endif
+    }
+    
+}
+
+
+
+public class PoolManager : Singleton<PoolManager>
+{
+    private PoolChunkManager<BulletControl> _bulletControl = new PoolChunkManager<BulletControl>();
+    public PoolChunkManager<BulletControl> BulletControl => _bulletControl;
+    
+    public object GetPoolChunkManager<T>() where T: MonoBehaviour
+    {
+        Type getType = typeof(T);
+        if (getType == typeof(BulletControl))
+        {
+            return _bulletControl;
+        }
+
+        return default;
+    }
+    public T GetPool<T>(string namePool, Transform parent = null) where T: MonoBehaviour
+    {
+        Type getType = typeof(T);
+        if (getType == typeof(BulletControl))
+        {
+            return _bulletControl.GetPool<T>(namePool, parent);
+        }
+        return default;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            var bullet = GetPool<BulletControl>("testPool", null);
+            bullet.Fire(Vector3.zero, Vector3.one * 5, 10);
+        }        
     }
 }
 

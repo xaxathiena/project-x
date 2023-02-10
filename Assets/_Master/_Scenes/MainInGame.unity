@@ -171,6 +171,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   size: {x: 2.16, y: 3.38, z: 0.75}
+--- !u!1 &80624835
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 80624836}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &80624836
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80624835}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.05, y: 8.93, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1638553676}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &101272914 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4029350024670358, guid: c2e6ed937d29e5442829c3123e89fbae,
@@ -736,9 +767,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a96378d5411e914d881ecaa4b80cc19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  theMortherTree: {fileID: 1406306103}
+  theMortherTree: {fileID: 1638553677}
   timeToSpawn: 20
   currentTime: 0
+  isSpawn: 1
 --- !u!1001 &536151074
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1832,7 +1864,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b451958f034959c4c862074c1cab8566, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pools: []
 --- !u!1 &1100976286
 GameObject:
   m_ObjectHideFlags: 0
@@ -2054,7 +2085,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1906341447375358, guid: 70b8c220c0960b54b867ab3e2ce3c003, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1906341447375358, guid: 70b8c220c0960b54b867ab3e2ce3c003, type: 3}
       propertyPath: m_NavMeshLayer
@@ -2210,7 +2241,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1044631511341116, guid: 90f6a23eb72c58342ab88639996de8df, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1044631511341116, guid: 90f6a23eb72c58342ab88639996de8df, type: 3}
       propertyPath: m_NavMeshLayer
@@ -2796,6 +2827,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1406306103}
+  - {fileID: 80624836}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2811,6 +2843,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 537e3900872faa8418ea56bb6efa4998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numberBullet: 10
+  rof: 1
+  rangeAttack: 30
+  bulletName: testPool
+  speed: 100
+  firePoint: {fileID: 80624836}
 --- !u!1 &1661556462
 GameObject:
   m_ObjectHideFlags: 0
@@ -3531,7 +3569,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2145043077}
-  - component: {fileID: 2145043076}
+  - component: {fileID: 2145043078}
   m_Layer: 0
   m_Name: TestPool
   m_TagString: Untagged
@@ -3539,28 +3577,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2145043076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2145043075}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 651fa90b3a543c745a6934c617f83cd7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pool:
-    total: 5
-    namePool: testBullet
-    prefab: {fileID: 9132095264998157515, guid: a2d8310e5d7c070489c5b7f7d214f5b5,
-      type: 3}
-    canExpand: 1
-    isHasLifetime: 0
-    lifeTime: 0
-    parent: {fileID: 0}
-  initInStart: 1
 --- !u!4 &2145043077
 Transform:
   m_ObjectHideFlags: 0
@@ -3576,6 +3592,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2145043078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145043075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fe1b76631d5570408542ba31c14855e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pool:
+    total: 5
+    namePool: testPool
+    prefab: {fileID: 9132095264998157512, guid: a2d8310e5d7c070489c5b7f7d214f5b5,
+      type: 3}
+    canExpand: 1
+    isHasLifetime: 0
+    lifeTime: 0
+    elements: []
+    parent: {fileID: 0}
+  initInStart: 1
 --- !u!1 &1007261863756703
 GameObject:
   m_ObjectHideFlags: 0

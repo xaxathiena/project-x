@@ -17,6 +17,7 @@ public class  UnitDefaultSpawnState : IState
     public void OnEnter(params object[] data)
     {
         Debug.Log("enter spawn");
+        parent.dataBinding.Speed = 0f;
     }
 
     public void OnEnterFromSameState(params object[] data)

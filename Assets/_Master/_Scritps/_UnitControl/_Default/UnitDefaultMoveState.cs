@@ -14,9 +14,10 @@ public class UnitDefaultMoveState: IState
 
     private float speedMove;
     private float playerDistance;
-    private Vector3 targetPosition;
     public Vector3 nextPos = Vector3.zero;
     public bool canTransitionToSelf { get; }
+    private IUnit targetUnit;
+    public Vector3 targetPos = Vector3.zero;
     public void Initialize(FSMSystem parent, params object[] datas)
     {
         path = new NavMeshPath();
@@ -32,7 +33,7 @@ public class UnitDefaultMoveState: IState
         //Set agen
         
         Debug.Log("Enter move");
-        targetPosition = InGameManager.instance.MotherTreePosition;
+        targetUnit = InGameManager.instance.MotherTreePosition;
         move = true;
         parent.agent.enabled = true;
         parent.obsTackle.enabled = false;
@@ -47,7 +48,7 @@ public class UnitDefaultMoveState: IState
     {
         if (move)
         {
-            playerDistance = Vector3.Distance(parent.transform.position, targetPosition);
+            playerDistance = Vector3.Distance(parent.transform.position, targetUnit.position) - targetUnit.boderRange;
             if (playerDistance < parent.attackRange)
             {
                 //Chuyen Qua attack State
@@ -59,18 +60,10 @@ public class UnitDefaultMoveState: IState
             }
             else
             {
-                // if (path.corners.Length > 0)
-                // {
-                //     if (Vector3.Distance(parent.transform.position, path.corners[1]) < delta)
-                //     {
-                //         Agent.CalculatePath(targetPosition,path);
-                //     }
-                // }
-                // else
-                // {
-                //     Agent.CalculatePath(targetPosition,path);
-                // }
-                Agent.CalculatePath(targetPosition,path);
+                targetPos = targetUnit.position +
+                            (parent.transform.position - targetUnit.position).normalized *
+                            targetUnit.boderRange;
+                Agent.CalculatePath(targetPos,path);
                 nextPos = path.corners[1];
                 //Move
                 var dir = (path.corners[1] - this.parent.transform.position).normalized;

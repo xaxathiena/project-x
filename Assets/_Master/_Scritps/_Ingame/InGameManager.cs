@@ -7,15 +7,17 @@ public class InGameManager : Singleton<InGameManager>
 {
     public static Action TimeToSpawnUnitsEvent;
     // Start is called before the first frame update
-    [SerializeField] private Transform theMortherTree;
+    [SerializeField] private TowerController theMortherTree;
     [SerializeField] private float timeToSpawn = 20f;
     [SerializeField] private float currentTime;
-    public Vector3 MotherTreePosition => theMortherTree.position;
+    [SerializeField] private bool isSpawn = false;
+    public IUnit MotherTreePosition => theMortherTree;
 
     public void Start()
     {
         currentTime = 0;
-        TimeToSpawnUnitsEvent?.Invoke();
+        if(isSpawn )
+            TimeToSpawnUnitsEvent?.Invoke();
     }
 
     private void Update()
@@ -24,7 +26,8 @@ public class InGameManager : Singleton<InGameManager>
         if (currentTime > timeToSpawn)
         {
             currentTime = 0f;
-            TimeToSpawnUnitsEvent?.Invoke();
+            if(UnitsManager.instance.unitsEnemy.Count < 10 && isSpawn )
+                TimeToSpawnUnitsEvent?.Invoke();
         }
     }
 }

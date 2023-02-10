@@ -35,7 +35,7 @@
             if(currentTime > parent.rof)
             {
                 currentTime = 0;
-                var playerDistance = Vector3.Distance(parent.transform.position, InGameManager.instance.MotherTreePosition);
+                var playerDistance = Vector3.Distance(parent.transform.position, InGameManager.instance.MotherTreePosition.position) - InGameManager.instance.MotherTreePosition.boderRange;
                 if (playerDistance < parent.attackRange)
                 {
                     this.parent.dataBinding.Speed = 0f;

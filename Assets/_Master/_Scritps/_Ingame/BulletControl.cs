@@ -8,7 +8,6 @@ public class BulletControl : MonoBehaviour
 {
     [SerializeField] private Vector3 startPosition;
     [SerializeField] private Vector3 targetPosition;
-    [SerializeField] private float speed;
     public GameObject bulletPrefab;
     public GameObject muzzlePrefab;
     public GameObject impactPrefab;
@@ -25,14 +24,17 @@ public class BulletControl : MonoBehaviour
     /// </summary>
     private ParticleSystem realImpactParticle;
 
-    private void OnEnable()
-    {
-        gameObject.SetActive(true);
-        Fire(startPosition, targetPosition, speed);
-    }
+    // private void OnEnable()
+    // {
+    //     gameObject.SetActive(true);
+    //     Fire(startPosition, targetPosition, speed);
+    // }
 
     public void Fire(Vector3 startPosition, Vector3 targetPosition, float speed)
     {
+        this.startPosition = startPosition;
+        this.targetPosition = targetPosition;
+        gameObject.SetActive(true);
         if (realBulletParticle == null)
         {
             var realBullet = Instantiate(bulletPrefab, transform);
@@ -58,7 +60,7 @@ public class BulletControl : MonoBehaviour
         transform.localRotation = q;
         realBulletParticle.transform.localRotation= Quaternion.identity;
         var distance = Vector3.Distance(targetPosition, this.startPosition);
-        InGameManager.instance.StartCoroutine(IERun(distance / this.speed, 
+        InGameManager.instance.StartCoroutine(IERun(distance / speed, 
             Quaternion.LookRotation((startPosition - targetPosition ).normalized)));
     }
 
@@ -77,5 +79,12 @@ public class BulletControl : MonoBehaviour
         yield return new WaitUntil(() => isDone);
         yield return new WaitForSeconds(0.3f);
         gameObject.SetActive(false);
+    }
+
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position, 1f);
+        Gizmos.DrawSphere(targetPosition, 1f);
     }
 }

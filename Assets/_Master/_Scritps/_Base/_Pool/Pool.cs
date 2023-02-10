@@ -4,17 +4,16 @@ using UnityEngine;
 using System;
 using UniRx;
 [System.Serializable]
-public class CustomPool : IDisposable
+public class CustomPool<T> : IDisposable where T: MonoBehaviour
 {
     public int total;
     public string namePool;
-    public Transform prefab;
+    public T prefab;
     public bool canExpand = false;
     public bool isHasLifetime = false;
     public float lifeTime;
-    [System.NonSerialized]
-    public List<Transform> elements= new List<Transform>();
-    private Dictionary<Transform, IDisposable> lifeTimeSequence = new Dictionary<Transform, IDisposable>();
+    public List<T> elements= new List<T>();
+    private Dictionary<T, IDisposable> lifeTimeSequence = new Dictionary<T, IDisposable>();
     private int index=-1;
     public Transform parent;
     private bool _disposed;
@@ -24,7 +23,7 @@ public class CustomPool : IDisposable
     public CustomPool()
     {
     }
-    public CustomPool(string name, int total,Transform prefab,bool canExpand = false, Transform parent = null, Action<Transform> onInit = null)
+    public CustomPool(string name, int total,T prefab,bool canExpand = false, Transform parent = null, Action<Transform> onInit = null)
     {
         this.namePool = name;
         this.total = total;
@@ -33,10 +32,10 @@ public class CustomPool : IDisposable
         this.parent = parent;
         this.onInit = onInit;
     }
-    public Transform OnSpawned(Transform parent = null)
+    public T OnSpawned(Transform parent = null)
     {
         if (_disposed)
-            return null;
+            return default;
         index++;
 
         if (index >= elements.Count )
@@ -44,7 +43,7 @@ public class CustomPool : IDisposable
             index = 0;
         }
 
-        Transform trans = elements[index];
+        T trans = elements[index];
         while(trans.gameObject.activeInHierarchy && index < elements.Count - 1)
         {
             index++;
@@ -56,9 +55,9 @@ public class CustomPool : IDisposable
             index = -1;
             if (canExpand)
             {
-                trans = MonoBehaviour.Instantiate(prefab, Vector3.zero, Quaternion.identity, this.parent);
-                onInit?.Invoke(trans);
-                elements.Add(trans);
+                var transObj = MonoBehaviour.Instantiate(prefab, Vector3.zero, Quaternion.identity, this.parent);
+                onInit?.Invoke(transObj.transform);
+                elements.Add(transObj.GetComponent<T>());
             }
             else
             {
@@ -74,7 +73,7 @@ public class CustomPool : IDisposable
         }
         IPoolable e = trans.GetComponent<IPoolable>();
         e?.OnSpawned();
-        trans.SetParent(parent == null ? this.parent : parent) ;
+        trans.transform.SetParent(parent == null ? this.parent : parent) ;
         //trans.SetPositionAndRotation();
         //trans.localPosition = Vector3.zero;
         //trans.localRotation = Quaternion.identity;
@@ -82,7 +81,7 @@ public class CustomPool : IDisposable
         //trans.localScale = Vector3.one;
         return trans;
     }
-    public void OnDespawned(Transform trans)
+    public void OnDespawned(T trans)
     {
         if (_disposed)
             return;
@@ -102,7 +101,7 @@ public class CustomPool : IDisposable
             IPoolable e = trans.GetComponent<IPoolable>();
             e?.OnDespawned();
             trans.gameObject.SetActive(false);
-            trans.SetParent(parent == null ? this.parent : parent);
+            trans.transform.SetParent(parent == null ? this.parent : parent);
         }
     }
     public void DespawnAll()
