@@ -5,10 +5,23 @@ using UnityEngine;
 
 public class TowerController : MonoBehaviour, IUnit
 {
+    public UnitSide unitSide { get => UnitSide.Ally; }
     public float boderRange { get => 5f; }
     public Vector3 position { get => transform.position; }
     public Quaternion rotation { get => transform.rotation; }
-    
+    public void UnitSpawn()
+    {
+        UnitsManager.instance.AddTower(this);
+    }
+
+    public void UnitDestroy()
+    {
+        UnitsManager.instance.RemoveTower(this);
+    }
+
+    public Vector3 Dir { get => transform.forward; set => transform.forward = value; }
+    public bool IsReceiveDirective { get; set; }
+
     [Header("Setting parameter")] 
     public int numberBullet;
     public float rof;
@@ -17,13 +30,15 @@ public class TowerController : MonoBehaviour, IUnit
     public float speed;
     [Header("Setting in scene")] 
     [SerializeField] private Transform firePoint;
-    private List<Transform> targets = new List<Transform>();
+    private List<IUnit> targets = new List<IUnit>();
     private float timeToAttack = .2f;
     private float currentTime = 0f;
     private bool isAttacking = false;
     private void Start()
     {
+        IsReceiveDirective = false;
         currentTime = 0f;
+        UnitSpawn();
     }
 
     private void Update()
@@ -35,7 +50,7 @@ public class TowerController : MonoBehaviour, IUnit
         }
 
         targets.Clear();
-        UnitsManager.instance.GetEnemiesInRange(ref targets, transform.position, rangeAttack);
+        UnitsManager.instance.GetUnitInRange(ref targets, transform.position, rangeAttack, unitSide);
         if (targets.Count > 0)
         {
             isAttacking = true;
@@ -66,7 +81,7 @@ public class TowerController : MonoBehaviour, IUnit
     }
 
 
-    private int ComparePosition(Transform x, Transform y)
+    private int ComparePosition(IUnit x, IUnit y)
     {
         return Vector3.Distance(y.position, this.transform.position) >
                Vector3.Distance(y.position, this.transform.position)? 1: -1;

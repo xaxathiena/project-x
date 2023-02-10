@@ -7,7 +7,7 @@ using UnityEngine;
 public class TowerSpawnEnemyControl : MonoBehaviour
 {
     [SerializeField] private Transform[] enemiesPositionSpawn;
-    [SerializeField] private GameObject prefabTest;
+    [SerializeField] private UnitDefaultControl prefabTest;
 
     public void Awake()
     {
@@ -20,7 +20,7 @@ public class TowerSpawnEnemyControl : MonoBehaviour
             var newUnit = Instantiate(prefabTest);
             newUnit.transform.position = enemiesPositionSpawn[i].position;
             newUnit.transform.forward = enemiesPositionSpawn[i].right;
-            UnitsManager.instance.unitsEnemy.Add(newUnit.transform);
+            UnitsManager.instance.units.Add(newUnit);
         }
     }
 }

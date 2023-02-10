@@ -16,7 +16,6 @@ public class  UnitDefaultSpawnState : IState
 
     public void OnEnter(params object[] data)
     {
-        Debug.Log("enter spawn");
         parent.dataBinding.Speed = 0f;
     }
 
@@ -43,7 +42,6 @@ public class  UnitDefaultSpawnState : IState
 
     public void OnExit()
     {
-        Debug.Log("Exit spawn");
     }
 
     public void Dispose()

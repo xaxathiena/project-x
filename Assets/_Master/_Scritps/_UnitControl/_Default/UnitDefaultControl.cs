@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Serialization;
 
-public class UnitDefaultControl : FSMSystem
+public class UnitDefaultControl : FSMSystem, IUnit
 {
     [Header("Setup state")]
     public UnitDefaultSpawnState spawState;
@@ -21,11 +21,25 @@ public class UnitDefaultControl : FSMSystem
     public NavMeshObstacle obsTackle;
     public UnitDefaultDataBinding dataBinding;
     public CharacterController controller;
+    
+    [Header("Setup parameter")]
     public float attackRange = 3;
     public float detectRange = 10;
     public float rof = 0.3f;
+    public List<Transform> positionsPath;
+    
+    
+    private IUnit currentTarget;
+    private List<IUnit> tempResult = new List<IUnit>();
+    private float timeToFindNewTarget = 0.5f;
+    private float currentTimeToFindNewTarget = 0f;
+    private Vector3 dir = Vector3.right;
+    public IUnit CurrentTarget => currentTarget;
+    
     private void Start()
     {
+        IsReceiveDirective = true;
+        dir = transform.forward;
         dataBinding = new UnitDefaultDataBinding();
         dataBinding.Init(amin);
         
@@ -52,7 +66,7 @@ public class UnitDefaultControl : FSMSystem
         SetEntryState(spawState);
         SystemStart();
     }
-
+    
 
     public void GotoIdle(params object[] data)
     {
@@ -77,11 +91,39 @@ public class UnitDefaultControl : FSMSystem
     public override void SystemUpdate()
     {
         dataBinding.OnUpdate();
+        currentTimeToFindNewTarget += Time.deltaTime;
     }
 
     public override void SystemFixedUpdate()
     {
+        FindNewTarget();
         dataBinding.OnFixedUpdate();
+    }
+    
+    private void FindNewTarget()
+    {
+        if (currentTimeToFindNewTarget > timeToFindNewTarget)
+        {
+            currentTimeToFindNewTarget = 0f;
+            tempResult.Clear();
+            UnitsManager.instance.GetUnitInRange(ref tempResult, transform.position, attackRange,
+                unitSide);
+            if (tempResult.Count == 0)
+            {
+                UnitsManager.instance.GetTowerInRange(ref tempResult, transform.position, attackRange,
+                    unitSide);
+            }
+
+            if (tempResult.Count > 0)
+            {
+                tempResult.Sort(ComparePosition);
+                currentTarget = tempResult[0];
+            }
+            else
+            {
+                currentTarget = null;
+            }
+        }
     }
     void OnDrawGizmos()
     {
@@ -90,7 +132,21 @@ public class UnitDefaultControl : FSMSystem
         Gizmos.DrawWireSphere(transform.position, detectRange);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(moveState.targetPos, attackRange);
     }
+
+    public UnitSide unitSide { get => UnitSide.Enemy; }
+    public float boderRange { get => 1f; }
+    public Vector3 position { get => transform.position; }
+    public Quaternion rotation { get => transform.rotation; }
+    public void UnitSpawn()
+    {
+        UnitsManager.instance.AddUnit(this);
+    }
+    public void UnitDestroy()
+    {
+        UnitsManager.instance.RemoveUnit(this);
+    }
+
+    public Vector3 Dir { get => dir; set => dir = value; }
+    public bool IsReceiveDirective { get; set; }
 }

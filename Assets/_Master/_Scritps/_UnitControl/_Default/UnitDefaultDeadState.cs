@@ -17,7 +17,6 @@ public class  UnitDefaultDeadState : IState
     public void OnEnter(params object[] data)
     {
         currentTime = 0f;
-        Debug.Log("Enter spawn");
         parent.dataBinding.IsDead = true;
         parent.agent.enabled = false;
         parent.obsTackle.enabled = false;

@@ -18,7 +18,6 @@ public class  UnitDefaultIdleState : IState
     public void OnEnter(params object[] data)
     {
         currentTime = 0f;
-        Debug.Log("Enter spawn");
         parent.dataBinding.Speed = 0;
         parent.agent.enabled = false;
         parent.obsTackle.enabled = true;

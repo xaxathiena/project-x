@@ -26,7 +26,7 @@ public class InGameManager : Singleton<InGameManager>
         if (currentTime > timeToSpawn)
         {
             currentTime = 0f;
-            if(UnitsManager.instance.unitsEnemy.Count < 10 && isSpawn )
+            if(UnitsManager.instance.units.Count < 10 && isSpawn )
                 TimeToSpawnUnitsEvent?.Invoke();
         }
     }

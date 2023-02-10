@@ -136,7 +136,11 @@ namespace StateMachine
                 entryData = null;
             }
         }
-        
+        public int ComparePosition(IUnit x, IUnit y)
+        {
+            return Vector3.Distance(y.position, this.transform.position) >
+                   Vector3.Distance(y.position, this.transform.position)? 1: -1;
+        }
     }
     #endregion
     

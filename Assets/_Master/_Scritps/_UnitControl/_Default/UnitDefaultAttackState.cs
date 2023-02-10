@@ -17,7 +17,6 @@
         public void OnEnter(params object[] data)
         {
             currentTime = 0f;
-            Debug.Log("Enter spawn");
             parent.dataBinding.Speed = 0;
             parent.dataBinding.Attack = true;
             parent.agent.enabled = false;

@@ -1,4 +1,6 @@
-﻿using StateMachine;
+﻿using System.Collections.Generic;
+using BestHTTP.SecureProtocol.Org.BouncyCastle.Asn1.Tsp;
+using StateMachine;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,32 +9,32 @@ public class UnitDefaultMoveState: IState
 {
     [HideInInspector] public UnitDefaultControl parent;
 
-    private NavMeshAgent Agent => parent.agent;
-    private NavMeshPath path;
     [SerializeField]
     private bool move;
+    private NavMeshAgent Agent => parent.agent;
+    private NavMeshPath path;
 
     private float speedMove;
-    private float playerDistance;
-    public Vector3 nextPos = Vector3.zero;
-    public bool canTransitionToSelf { get; }
     private IUnit targetUnit;
-    public Vector3 targetPos = Vector3.zero;
+    // private List<Transform> points = new List<Transform>();
+    // private int currentPoint = 0;
+    // public Vector3 nextPos = Vector3.zero;
+    public bool canTransitionToSelf { get; }
+    // public Vector3 targetPos = Vector3.zero;
     public void Initialize(FSMSystem parent, params object[] datas)
     {
         path = new NavMeshPath();
         // Agent = this.parent.agent;
         speedMove = 3f;
-        playerDistance = 99f;
         this.parent.dataBinding.Speed = speedMove;
         move = false;
+        // points = (List<Transform>)datas[0];
     }
 
     public void OnEnter(params object[] data)
     {
         //Set agen
         
-        Debug.Log("Enter move");
         targetUnit = InGameManager.instance.MotherTreePosition;
         move = true;
         parent.agent.enabled = true;
@@ -48,8 +50,7 @@ public class UnitDefaultMoveState: IState
     {
         if (move)
         {
-            playerDistance = Vector3.Distance(parent.transform.position, targetUnit.position) - targetUnit.boderRange;
-            if (playerDistance < parent.attackRange)
+            if (parent.CurrentTarget != null)
             {
                 //Chuyen Qua attack State
                 move = false;
@@ -60,14 +61,14 @@ public class UnitDefaultMoveState: IState
             }
             else
             {
-                targetPos = targetUnit.position +
-                            (parent.transform.position - targetUnit.position).normalized *
-                            targetUnit.boderRange;
-                Agent.CalculatePath(targetPos,path);
-                nextPos = path.corners[1];
+                // targetPos = targetUnit.position +
+                //             (parent.transform.position - targetUnit.position).normalized *
+                //             targetUnit.boderRange;
+                // Agent.CalculatePath(targetPos,path);
+                // nextPos = path.corners[1];
                 //Move
-                var dir = (path.corners[1] - this.parent.transform.position).normalized;
-                var q = Quaternion.LookRotation(dir, Vector3.up);
+                // var dir = (path.corners[1] - this.parent.transform.position).normalized;
+                var q = Quaternion.LookRotation(parent.Dir, Vector3.up);
                 this.parent.transform.localRotation  = Quaternion.Lerp(this.parent.transform.localRotation,q, Time.deltaTime*10);
                 // Debug.LogError(Vector3.Distance(currentData.control.transform.position, agent.nextPosition));
                 // agent.destination = playerTrans.position;
@@ -81,12 +82,15 @@ public class UnitDefaultMoveState: IState
         }
     }
 
+   
     public void OnLateUpdate()
     {
+        
     }
 
     public void OnFixedUpdate()
     {
+        
     }
 
     public void OnExit()
