@@ -50,6 +50,6 @@ public class JoyStickInput : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     void Update()
     {
         if(moveDir.magnitude <=0)
-            knod.anchoredPosition = new Vector2(InputManager.moveDir.x * radius, InputManager.moveDir.y * radius);
+            knod.anchoredPosition = new Vector2(InputManager.moveDir.normalized.x * radius, InputManager.moveDir.normalized.z * radius);
     }
 }

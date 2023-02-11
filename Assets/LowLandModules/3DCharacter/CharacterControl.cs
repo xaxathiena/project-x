@@ -34,7 +34,6 @@ public class CharacterControl : MonoBehaviour
         {   
             if(value)
             {
-             
                 dataBiding.Attack = true;
                 indexCombo++;
                
@@ -115,16 +114,13 @@ public class CharacterControl : MonoBehaviour
         // atack 
         timeCount += Time.deltaTime;
         if (IsFire)
-        {
-          if (currentAnimationData.timeAttak > 0 && timeCount >= currentAnimationData.timeAttak)
+        { 
+            if (currentAnimationData.timeAttak > 0 && timeCount >= currentAnimationData.timeAttak)
             {
 
                 IsFire = false;
             }
-
-            
         }
-
         else
         {
              moveDir = InputManager.moveDir;
@@ -141,6 +137,11 @@ public class CharacterControl : MonoBehaviour
                 
             }
             dataBiding.SpeedMove = moveDir.magnitude;
+            if (!Physics.Raycast(anchorFootTrackMove.position, -trans.up, 1, maskBG))
+            {
+                moveDir.y = -1f;
+            }
+            controller.Move(moveDir * Time.deltaTime * speedMove);
         }
         if (timeCount >= rof)
         {
@@ -149,11 +150,7 @@ public class CharacterControl : MonoBehaviour
             //currentEnemy = null;
 
         }
-        if (!Physics.Raycast(anchorFootTrackMove.position, -trans.up, 1, maskBG))
-        {
-            moveDir.y = -1f;
-        }
-        controller.Move(moveDir * Time.deltaTime * speedMove);
+        
     }
 
     private void OnAnimatorIK(int layerIndex)

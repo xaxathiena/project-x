@@ -2276,6 +2276,26 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 600044140770772803, guid: 2ec0cfb9a6bda43458f540208e384ff3,
+        type: 3}
+      propertyPath: animaCombo.Array.data[0].timeAttak
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 600044140770772803, guid: 2ec0cfb9a6bda43458f540208e384ff3,
+        type: 3}
+      propertyPath: animaCombo.Array.data[1].timeAttak
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 600044140770772803, guid: 2ec0cfb9a6bda43458f540208e384ff3,
+        type: 3}
+      propertyPath: animaCombo.Array.data[2].timeAttak
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 600044140770772803, guid: 2ec0cfb9a6bda43458f540208e384ff3,
+        type: 3}
+      propertyPath: animaCombo.Array.data[3].timeAttak
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 600044142702663048, guid: 2ec0cfb9a6bda43458f540208e384ff3,
         type: 3}
       propertyPath: m_RootOrder
