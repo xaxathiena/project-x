@@ -21,6 +21,7 @@ public class  UnitDefaultDeadState : IState
         parent.agent.enabled = false;
         Debug.Log("Obstackle enableed = " + false);
         parent.obsTackle.enabled = false;
+        parent.IsShowHealBar = false;
     }
 
     public void OnEnterFromSameState(params object[] data)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MoreMountains.Tools;
 using StateMachine;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -23,17 +24,19 @@ public class UnitDefaultControl : FSMSystem, IUnit
     public CharacterController controller;
     
     [Header("Setup parameter")]
-    public float attackRange = 3;
-    public float detectRange = 10;
-    public float rof = 0.3f;
-    public List<Transform> positionsPath;
-    
-    
+    public HealBarController healBarController;
     private IUnit currentTarget;
     private List<IUnit> tempResult = new List<IUnit>();
     private float timeToFindNewTarget = 0.5f;
     private float currentTimeToFindNewTarget = 0f;
     private Vector3 dir = Vector3.right;
+    
+    
+    public float attackRange = 3;
+    public float detectRange = 10;
+    public float rof = 0.3f;
+    public List<Transform> positionsPath;
+    
     public IUnit CurrentTarget => currentTarget;
     
     private void Start()
@@ -65,6 +68,7 @@ public class UnitDefaultControl : FSMSystem, IUnit
         
         SetEntryState(spawState);
         SystemStart();
+        healBarController.InitHealBar();
     }
     
 
@@ -83,8 +87,12 @@ public class UnitDefaultControl : FSMSystem, IUnit
         currentStateStr = "GotoDead";
         GotoState(deadState, data);
     }
+
+    private float currentHeal = 100;
     public void GotoAttack(params object[] data)
     {
+        currentHeal -= 5;
+        healBarController.SetupHealth(currentHeal, 0, 100);
         currentStateStr = "GotoAttack";
         GotoState(attackState, data);
     }
@@ -97,6 +105,10 @@ public class UnitDefaultControl : FSMSystem, IUnit
     {
         dataBinding.OnUpdate();
         currentTimeToFindNewTarget += Time.deltaTime;
+        if (currentHeal <= 0)
+        {
+            GotoDead();
+        }
     }
 
     public override void SystemFixedUpdate()
@@ -150,6 +162,11 @@ public class UnitDefaultControl : FSMSystem, IUnit
 
     public Vector3 Dir { get => dir; set => dir = value; }
     public bool IsReceiveDirective { get; set; }
+    public bool IsShowHealBar
+    {
+        set => healBarController.gameObject.SetActive(value);
+    }
+
     public void ApplyDamage(AttackData data)
     {
         throw new NotImplementedException();
