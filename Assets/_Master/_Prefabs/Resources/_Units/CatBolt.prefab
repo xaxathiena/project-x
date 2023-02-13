@@ -570,7 +570,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31da845da6f4e104aa19d747ead9907f, type: 2}
+  - {fileID: 2100000, guid: 179555ab8bd66734b8c1ac67e84c7cbc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1030,6 +1030,9 @@ MonoBehaviour:
   detectRange: 10
   rof: 0.3
   positionsPath: []
+  mat:
+  - {fileID: 1337218903770291348}
+  collider: {fileID: 298973695536937681}
 --- !u!143 &7033818572973575669
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1934,8 +1937,13 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 154501916963655491, guid: 5a04b29b5194f864c9a8083f8b2b7d03,
         type: 3}
+      propertyPath: speedFill
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 154501916963655491, guid: 5a04b29b5194f864c9a8083f8b2b7d03,
+        type: 3}
       propertyPath: maxTimeDelay
-      value: 1
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8669649719388012899, guid: 5a04b29b5194f864c9a8083f8b2b7d03,
         type: 3}

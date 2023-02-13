@@ -29,9 +29,10 @@ public class BulletControl : MonoBehaviour
     //     gameObject.SetActive(true);
     //     Fire(startPosition, targetPosition, speed);
     // }
-
-    public void Fire(Vector3 startPosition, Vector3 targetPosition, float speed)
+    private AttackData data;
+    public void Fire(Vector3 startPosition, Vector3 targetPosition, float speed, AttackData data)
     {
+        this.data = data;
         this.startPosition = startPosition;
         this.targetPosition = targetPosition;
         gameObject.SetActive(true);
@@ -75,6 +76,7 @@ public class BulletControl : MonoBehaviour
             realMuzzleParticle.Play();
             realImpactParticle.Play();
             isDone = true;
+            this.data.unit.ApplyDamage(this.data);
         }); 
         yield return new WaitUntil(() => isDone);
         yield return new WaitForSeconds(0.3f);

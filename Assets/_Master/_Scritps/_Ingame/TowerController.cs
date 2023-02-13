@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class TowerController : MonoBehaviour, IUnit
@@ -9,6 +10,7 @@ public class TowerController : MonoBehaviour, IUnit
     public float boderRange { get => 5f; }
     public Vector3 position { get => transform.position; }
     public Quaternion rotation { get => transform.rotation; }
+    public float dame;
     public void UnitSpawn()
     {
         UnitsManager.instance.AddTower(this);
@@ -70,18 +72,30 @@ public class TowerController : MonoBehaviour, IUnit
         {
             if (currentTime < rof) return;
         }
-        currentTime = 0f;
+        currentTime = -0.25f;
         targets.Sort(ComparePosition);
-        for (int i = 0; i < numberBullet; i++)
-        {
-            if (i < targets.Count)
-            {
-                // bullet
-                var bullet= PoolManager.instance.GetPool<BulletControl>(bulletName);
-                bullet.Fire(firePoint.position, targets[i].position, speed);
-            }
-        }
-
+        var quene = DOTween.Sequence();
+        quene.Append(
+            transform.DOScale(Vector3.one * 0.6f, 0.05f)
+        ).Append(
+                transform.DOScale(Vector3.one, 0.2f).OnComplete(() =>
+                {
+                    for (int i = 0; i < numberBullet; i++)
+                    {
+                        if (i < targets.Count)
+                        {
+                            // bullet
+                            var bullet = PoolManager.instance.GetPool<BulletControl>(bulletName);
+                            bullet.Fire(firePoint.position, targets[i].position, speed, new AttackData()
+                            {
+                                damage = dame,
+                                unit = targets[i]
+                            });
+                        }
+                    }
+                })
+        );
+        quene.Play();
     }
 
 

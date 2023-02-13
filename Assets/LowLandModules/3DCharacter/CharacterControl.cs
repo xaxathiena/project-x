@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class AttackData
 {
-    public int damage;
+    public float damage;
     public float force;
     public Transform trans;
+    public IUnit unit;
 
 }
 public class CharacterControl : MonoBehaviour, IUnit
@@ -26,6 +27,7 @@ public class CharacterControl : MonoBehaviour, IUnit
     private float rof = 0;
     public float speedRotate=5;
     public float speedMove = 5;
+    public float dame = 5;
     private int indexCombo = 0;
     private bool isFire_;
     private bool IsFire
@@ -257,7 +259,7 @@ public class CharacterControl : MonoBehaviour, IUnit
         List<EnemyTargetSelect> ls = GetTarget(currentAnimationData.angleForce);
         AttackData attackData = new AttackData
         {
-            damage = 1,
+            damage = dame,
             force = currentAnimationData.force,
             trans = this.trans
         };

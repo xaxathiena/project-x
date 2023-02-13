@@ -3438,6 +3438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 537e3900872faa8418ea56bb6efa4998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dame: 5
   numberBullet: 3
   rof: 1
   rangeAttack: 25.91

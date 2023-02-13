@@ -215,11 +215,11 @@ public class PoolManager : Singleton<PoolManager>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            var bullet = GetPool<BulletControl>("testPool", null);
-            bullet.Fire(Vector3.zero, Vector3.one * 5, 10);
-        }        
+        // if (Input.GetKeyDown(KeyCode.F))
+        // {
+        //     var bullet = GetPool<BulletControl>("testPool", null);
+        //     bullet.Fire(Vector3.zero, Vector3.one * 5, 10);
+        // }        
     }
 }
 

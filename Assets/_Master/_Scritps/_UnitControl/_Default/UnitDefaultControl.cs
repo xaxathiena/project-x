@@ -31,14 +31,15 @@ public class UnitDefaultControl : FSMSystem, IUnit
     private float currentTimeToFindNewTarget = 0f;
     private Vector3 dir = Vector3.right;
     
-    
     public float attackRange = 3;
     public float detectRange = 10;
     public float rof = 0.3f;
     public List<Transform> positionsPath;
     
     public IUnit CurrentTarget => currentTarget;
-    
+    public Renderer[] mat;
+
+    public Collider collider;
     private void Start()
     {
         IsReceiveDirective = true;
@@ -85,14 +86,15 @@ public class UnitDefaultControl : FSMSystem, IUnit
     public void GotoDead(params object[] data)
     {
         currentStateStr = "GotoDead";
+        collider.enabled = false;
+        controller.enabled = false;
+        UnitsManager.instance.RemoveUnit(this);
         GotoState(deadState, data);
     }
 
     private float currentHeal = 100;
     public void GotoAttack(params object[] data)
     {
-        currentHeal -= 5;
-        healBarController.SetupHealth(currentHeal, 0, 100);
         currentStateStr = "GotoAttack";
         GotoState(attackState, data);
     }
@@ -169,7 +171,8 @@ public class UnitDefaultControl : FSMSystem, IUnit
 
     public void ApplyDamage(AttackData data)
     {
-        throw new NotImplementedException();
+        currentHeal -= data.damage;
+        healBarController.SetupHealth(currentHeal, 0, 100);
     }
     
     void OnDrawGizmos()
