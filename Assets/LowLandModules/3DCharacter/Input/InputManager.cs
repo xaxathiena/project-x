@@ -10,13 +10,13 @@ public class InputManager : MonoBehaviour
     private JoyStickInput moveJoystick;
     public static Vector3 moveDir = Vector3.zero;
     public event Action OnFireHandle;
-    [SerializeField]SimpleControls m_Controls;
+    // [SerializeField]SimpleControls m_Controls;
 
     // Start is called before the first frame update
     void Awake()
     {
         instance = this;
-        m_Controls = new SimpleControls();
+        // m_Controls = new SimpleControls();
         // m_Controls.gameplay.
     }
     private float _x, _y;
