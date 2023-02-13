@@ -83,8 +83,8 @@ public class BulletControl : MonoBehaviour
 
     public void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position, 1f);
-        Gizmos.DrawSphere(targetPosition, 1f);
+        // Gizmos.color = Color.red;
+        // Gizmos.DrawSphere(transform.position, 1f);
+        // Gizmos.DrawSphere(targetPosition, 1f);
     }
 }

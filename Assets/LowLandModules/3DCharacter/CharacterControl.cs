@@ -1,16 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
-// using DG.Tweening;
 
-public class CharacterAttackData
+public class AttackData
 {
     public int damage;
     public float force;
     public Transform trans;
 
 }
-public class CharacterControl : MonoBehaviour
+public class CharacterControl : MonoBehaviour, IUnit
 {
     public CharacterController controller;
     public LayerMask maskBG;
@@ -18,7 +18,7 @@ public class CharacterControl : MonoBehaviour
     public float rangeDetect;
     public CharacterDataBiding dataBiding;
     private Transform trans;
-    //private EnemyControl currentEnemy;
+    private IUnit currentEnemy;
     public List<AnimationData> animaCombo;
     private Dictionary<int, AnimationData> dicAnimCombo = new Dictionary<int, AnimationData>();
     private AnimationData currentAnimationData;
@@ -40,18 +40,18 @@ public class CharacterControl : MonoBehaviour
                 currentAnimationData = dicAnimCombo[indexCombo];
                 rof=currentAnimationData.timeAnim;
                 timeCount = 0;
-                // check target 
-                // currentEnemy = GetTarget();
-                // if(currentEnemy!=null)
-                // {
-                //     // thuc hien dash
-                //     DashTotarget();
-                // }
+                //check target 
+                currentEnemy = GetTarget();
+                if(currentEnemy!=null)
+                {
+                    // thuc hien dash
+                    DashTotarget();
+                }
                
             }
             else
             {
-                if (false)// currentEnemy != null
+                if (currentEnemy != null)// 
                 {
                    
                 }
@@ -95,6 +95,7 @@ public class CharacterControl : MonoBehaviour
             dicAnimCombo.Add(e.index, e);
         }
         InputManager.instance.OnFireHandle+=OnFireHandle;
+        UnitSpawn();
     }
 
     void OnFireHandle()
@@ -147,7 +148,7 @@ public class CharacterControl : MonoBehaviour
         {
            
             IsFire = false;
-            //currentEnemy = null;
+            currentEnemy = null;
 
         }
         
@@ -175,51 +176,54 @@ public class CharacterControl : MonoBehaviour
         //dataBiding.IndexCombo = indexCombo;
     }
     //
-    // public EnemyControl GetTarget()
-    // {
-    //     currentEnemy = null;
-    //     EnemyControl enemy = null;
-    //     int enemyMask = 1 << 9;
-    //     Collider[] hitColliders = Physics.OverlapSphere(trans.position, rangeDetect, enemyMask);
-    //
-    //     List<EnemyTargetSelect> lstarget = new List<EnemyTargetSelect>();
-    //     foreach (Collider e in hitColliders)
-    //     {
-    //         Vector3 dir = e.transform.position - trans.position;
-    //         float dot = Vector3.Dot(trans.forward, dir.normalized);
-    //
-    //         if(dot>=0)
-    //         {
-    //             EnemyControl enemy_ = e.GetComponent<EnemyControl>();
-    //             float dis = Vector3.Distance(e.transform.position, trans.position);
-    //             lstarget.Add(new EnemyTargetSelect { enemyControl = enemy_, distance = dis, angle = dot });
-    //         }
-    //     }
-    //     lstarget.Sort();
-    //     if(lstarget.Count>0)
-    //     {
-    //         enemy = lstarget[0].enemyControl;
-    //     }
-    //    
-    //     return enemy;
-    // }
+    public IUnit GetTarget()
+    {
+        currentEnemy = null;
+        IUnit enemy = null;
+        int enemyMask = 1 << 9;
+        Collider[] hitColliders = Physics.OverlapSphere(trans.position, rangeDetect, enemyMask);
+
+        List<EnemyTargetSelect> lstarget = GetTarget(currentAnimationData.angleForce);
+        // foreach (Collider e in hitColliders)
+        // {
+        //     Vector3 dir = e.transform.position - trans.position;
+        //     float dot = Vector3.Dot(trans.forward, dir.normalized);
+        //
+        //     if(dot>=0)
+        //     {
+        //         IUnit enemy_ = e.GetComponent<IUnit>();
+        //         float dis = Vector3.Distance(e.transform.position, trans.position);
+        //         lstarget.Add(new EnemyTargetSelect { enemyControl = enemy_, distance = dis, angle = dot });
+        //     }
+        // }
+        lstarget.Sort();
+        if(lstarget.Count>0)
+        {
+            enemy = lstarget[0].enemyControl;
+        }
+       
+        return enemy;
+    }
+
+    private List<IUnit> enemyInRange = new List<IUnit>();
     public List<EnemyTargetSelect> GetTarget(float dotLimit)
     {
 
         int enemyMask = 1 << 9;
-        Collider[] hitColliders = Physics.OverlapSphere(trans.position, rangeDetect, enemyMask);
+        UnitsManager.instance.GetUnitInRange(ref enemyInRange, trans.position, rangeDetect, unitSide );
+        
+        // Collider[] hitColliders = Physics.OverlapSphere(trans.position, rangeDetect, enemyMask);
 
         List<EnemyTargetSelect> lstarget = new List<EnemyTargetSelect>();
-        foreach (Collider e in hitColliders)
+        foreach (IUnit e in enemyInRange)
         {
-            Vector3 dir = e.transform.position - trans.position;
-            float dot = Vector3.Dot(trans.forward, dir.normalized);
+            Vector3 dir = e.position - trans.position;
+            float dot = Vector3.Dot(trans.forward, dir.normalized);//calculator angle
 
             if (dot >= dotLimit)
             {
-               // EnemyControl enemy_ = e.GetComponent<EnemyControl>();
-                float dis = Vector3.Distance(e.transform.position, trans.position);
-                //lstarget.Add(new EnemyTargetSelect { enemyControl = enemy_, distance = dis, angle = dot });
+                float dis = Vector3.Distance(e.position, trans.position);
+                lstarget.Add(new EnemyTargetSelect { enemyControl = e, distance = dis, angle = dot });
             }
         }
         lstarget.Sort();
@@ -229,29 +233,29 @@ public class CharacterControl : MonoBehaviour
     }
     private void DashTotarget()
     {
-        // if (currentEnemy != null)
-        // {
-        //     Vector3 dir = currentEnemy.transform.position - trans.position;
-        //     Quaternion q = Quaternion.LookRotation(dir, Vector3.up);
-        //     trans.localRotation = q;
-        //     float dis = Vector3.Distance(currentEnemy.transform.position,trans.position);
-        //     if(dis> currentAnimationData.dashLimit)
-        //     {
-        //         Vector3 posAim = currentEnemy.transform.position - dir.normalized * currentAnimationData.dashLimit;
-        //
-        //         trans.DOMove(posAim, currentAnimationData.timeAttak).OnComplete(ApplyDamage);
-        //     }
-        //     else
-        //     {
-        //         trans.DOMove(trans.position,currentAnimationData.timeAttak).OnComplete(ApplyDamage);
-        //     }
-        //
-        // }
+        if (currentEnemy != null)
+        {
+            Vector3 dir = currentEnemy.position - trans.position;
+            Quaternion q = Quaternion.LookRotation(dir, Vector3.up);
+            trans.localRotation = q;
+            float dis = Vector3.Distance(currentEnemy.position,trans.position) + currentEnemy.boderRange;
+            if(dis> currentAnimationData.dashLimit)
+            {
+                Vector3 posAim = currentEnemy.position - dir.normalized * currentEnemy.boderRange;
+        
+                trans.DOMove(posAim, currentAnimationData.timeAttak).OnComplete(ApplyDamage);
+            }
+            else
+            {
+                trans.DOMove(trans.position,currentAnimationData.timeAttak).OnComplete(ApplyDamage);
+            }
+        
+        }
     }
     private void ApplyDamage()
     {
         List<EnemyTargetSelect> ls = GetTarget(currentAnimationData.angleForce);
-        CharacterAttackData attackData = new CharacterAttackData
+        AttackData attackData = new AttackData
         {
             damage = 1,
             force = currentAnimationData.force,
@@ -259,7 +263,7 @@ public class CharacterControl : MonoBehaviour
         };
         foreach (EnemyTargetSelect e in ls)
         {
-            //e.enemyControl.ApplyDamage(attackData);
+            e.enemyControl.ApplyDamage(attackData);
         }
     }
     
@@ -276,12 +280,31 @@ public class CharacterControl : MonoBehaviour
 #endif
 
 
+    public UnitSide unitSide { get => UnitSide.Ally; }
+    public float boderRange { get => 2f; }
+    public Vector3 position { get => trans.position; }
+    public Quaternion rotation { get => trans.rotation; }
+    public void UnitSpawn()
+    {
+        UnitsManager.instance.AddUnit(this);
+    }
 
+    public void UnitDestroy()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Vector3 Dir { get; set; }
+    public bool IsReceiveDirective { get; set; }
+    public void ApplyDamage(AttackData data)
+    {
+        throw new System.NotImplementedException();
+    }
 }
 
 public class EnemyTargetSelect: System.IComparable<EnemyTargetSelect>
 {
-    //public EnemyControl enemyControl;
+    public IUnit enemyControl;
     // lay be hon 
     public float distance;
     // lay lon hon

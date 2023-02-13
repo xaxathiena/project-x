@@ -70,22 +70,27 @@ public class UnitDefaultControl : FSMSystem, IUnit
 
     public void GotoIdle(params object[] data)
     {
+        currentStateStr = "GotoIdle";
         GotoState(idleState, data);
     }
     public void GotoMove(params object[] data)
     {
+        currentStateStr = "GotoMove";
         GotoState(moveState, data);
     }
     public void GotoDead(params object[] data)
     {
+        currentStateStr = "GotoDead";
         GotoState(deadState, data);
     }
     public void GotoAttack(params object[] data)
     {
+        currentStateStr = "GotoAttack";
         GotoState(attackState, data);
     }
     public void GotoSpawn(params object[] data)
     {
+        currentStateStr = "idle";
         GotoState(spawState, data);
     }
     public override void SystemUpdate()
@@ -106,12 +111,20 @@ public class UnitDefaultControl : FSMSystem, IUnit
         {
             currentTimeToFindNewTarget = 0f;
             tempResult.Clear();
-            UnitsManager.instance.GetUnitInRange(ref tempResult, transform.position, attackRange,
+            UnitsManager.instance.GetUnitInRange(ref tempResult, transform.position, detectRange,
                 unitSide);
             if (tempResult.Count == 0)
             {
-                UnitsManager.instance.GetTowerInRange(ref tempResult, transform.position, attackRange,
-                    unitSide);
+                if (moveState.isBreakNormalBehauviour)
+                {
+                    currentTarget = UnitsManager.instance.GetNearestTower(position);
+                }
+                else
+                {
+                    UnitsManager.instance.GetTowerInRange(ref tempResult, transform.position, detectRange,
+                        unitSide);
+                    
+                }
             }
 
             if (tempResult.Count > 0)
@@ -119,19 +132,7 @@ public class UnitDefaultControl : FSMSystem, IUnit
                 tempResult.Sort(ComparePosition);
                 currentTarget = tempResult[0];
             }
-            else
-            {
-                currentTarget = null;
-            }
         }
-    }
-    void OnDrawGizmos()
-    {
-        // Draw a yellow sphere at the transform's position
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, detectRange);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 
     public UnitSide unitSide { get => UnitSide.Enemy; }
@@ -149,4 +150,25 @@ public class UnitDefaultControl : FSMSystem, IUnit
 
     public Vector3 Dir { get => dir; set => dir = value; }
     public bool IsReceiveDirective { get; set; }
+    public void ApplyDamage(AttackData data)
+    {
+        throw new NotImplementedException();
+    }
+    
+    void OnDrawGizmos()
+    {
+        // Draw a yellow sphere at the transform's position
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, detectRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+        if (moveState.path.corners.Length > 1)
+        {
+            Gizmos.color = Color.yellow;
+            for (int i = 0; i < moveState.path.corners.Length - 1; i++)
+            {
+                Gizmos.DrawLine(moveState.path.corners[i], moveState.path.corners[i +1]);
+            }
+        }
+    }
 }

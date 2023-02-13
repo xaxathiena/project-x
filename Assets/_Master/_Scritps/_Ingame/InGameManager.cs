@@ -11,6 +11,7 @@ public class InGameManager : Singleton<InGameManager>
     [SerializeField] private float timeToSpawn = 20f;
     [SerializeField] private float currentTime;
     [SerializeField] private bool isSpawn = false;
+    [SerializeField] private int maxUnitSpawn = 3;
     public IUnit MotherTreePosition => theMortherTree;
 
     public void Start()
@@ -26,7 +27,7 @@ public class InGameManager : Singleton<InGameManager>
         if (currentTime > timeToSpawn)
         {
             currentTime = 0f;
-            if(UnitsManager.instance.units.Count < 10 && isSpawn )
+            if(UnitsManager.instance.units.Count < maxUnitSpawn && isSpawn )
                 TimeToSpawnUnitsEvent?.Invoke();
         }
     }

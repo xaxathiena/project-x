@@ -37,18 +37,39 @@ public class UnitsManager : Singleton<UnitsManager>
         foreach (var unit in units)
         {
             if(unit.unitSide == side) continue;
-            if (Vector3.Distance(unit.position, center) - unit.boderRange <= range)
+            var isInside = center.IsPositionInRange(unit.position, range, unit.boderRange);
+            if (isInside)
             {
                 result.Add(unit);
             }
         }
+    }
+
+    public IUnit GetNearestTower(Vector3 center)
+    {
+        IUnit nearestUnit = null;
+        float minDistance = float.MaxValue;
+        float currentDistance = float.MaxValue;
+        foreach (var unit in towers)
+        {
+            currentDistance = center.DistanceSQR(unit.position);
+            if (currentDistance < minDistance)
+            {
+                minDistance = currentDistance;
+                nearestUnit = unit;
+            }
+        }
+
+        return nearestUnit;
     }
     public void GetTowerInRange(ref List<IUnit> result, Vector3 center, float range, UnitSide side)
     {
         foreach (var unit in towers)
         {
             if(unit.unitSide == side) continue;
-            if (Vector3.Distance(unit.position, center)- unit.boderRange <= range)
+            var isInside = center.IsPositionInRange(unit.position, range, unit.boderRange);
+            
+            if (isInside)
             {
                 result.Add(unit);
             }

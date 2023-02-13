@@ -19,6 +19,7 @@ public class  UnitDefaultDeadState : IState
         currentTime = 0f;
         parent.dataBinding.IsDead = true;
         parent.agent.enabled = false;
+        Debug.Log("Obstackle enableed = " + false);
         parent.obsTackle.enabled = false;
     }
 
@@ -45,5 +46,10 @@ public class  UnitDefaultDeadState : IState
 
     public void Dispose()
     {
+    }
+
+    public void OnDrawGizmos()
+    {
+        
     }
 }

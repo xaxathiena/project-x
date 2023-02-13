@@ -20,6 +20,7 @@
             parent.dataBinding.Speed = 0;
             parent.dataBinding.Attack = true;
             parent.agent.enabled = false;
+            Debug.Log("Obstackle enableed = " + true);
             parent.obsTackle.enabled = true;
         }
 
@@ -29,22 +30,30 @@
 
         public void OnUpdate()
         {
-            
             currentTime += Time.deltaTime;
-            if(currentTime > parent.rof)
+            
+            if (parent.CurrentTarget == null)
             {
-                currentTime = 0;
-                var playerDistance = Vector3.Distance(parent.transform.position, InGameManager.instance.MotherTreePosition.position) - InGameManager.instance.MotherTreePosition.boderRange;
-                if (playerDistance < parent.attackRange)
+                parent.GotoIdle();
+            }
+            else
+            {
+                var isInSide = parent.position.IsPositionInRange( parent.CurrentTarget.position,parent.CurrentTarget.boderRange);
+                if (currentTime > parent.rof)
                 {
-                    this.parent.dataBinding.Speed = 0f;
-                    parent.dataBinding.Attack = true;
-                    //this.parent.GotoAttack();
-                    //currentData.control.SwiktchAction(Actionkey.ATTACK, currentData);
-                }
-                else
-                {    
-                    parent.GotoIdle();
+                    if (isInSide)
+                    {
+                        var dir = (parent.CurrentTarget.position - this.parent.transform.position).normalized;
+                        var q = Quaternion.LookRotation(dir, Vector3.up);
+                        this.parent.transform.localRotation = Quaternion.Lerp(this.parent.transform.localRotation,q, Time.deltaTime*10);
+                        currentTime = 0;
+                        this.parent.dataBinding.Speed = 0f;
+                        parent.dataBinding.Attack = true;
+                    }
+                    else
+                    {
+                        parent.GotoIdle();
+                    }
                 }
             }
         }
@@ -64,5 +73,10 @@
 
         public void Dispose()
         {
+        }
+
+        public void OnDrawGizmos()
+        {
+            
         }
     }

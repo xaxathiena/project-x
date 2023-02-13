@@ -833,6 +833,7 @@ MonoBehaviour:
   timeToSpawn: 20
   currentTime: 0
   isSpawn: 1
+  maxUnitSpawn: 4
 --- !u!1001 &536151074
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1757,9 +1758,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemiesPositionSpawn:
   - {fileID: 55971307}
-  - {fileID: 853896822}
-  - {fileID: 1100976287}
-  - {fileID: 198889419}
   prefabTest: {fileID: 2725616552951666204, guid: f5cb89e1a0915b6408162bd8d00b817e,
     type: 3}
 --- !u!65 &822563868
@@ -2269,32 +2267,12 @@ PrefabInstance:
     - target: {fileID: 600044140770772802, guid: 2ec0cfb9a6bda43458f540208e384ff3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 57.95
       objectReference: {fileID: 0}
     - target: {fileID: 600044140770772802, guid: 2ec0cfb9a6bda43458f540208e384ff3,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 600044140770772803, guid: 2ec0cfb9a6bda43458f540208e384ff3,
-        type: 3}
-      propertyPath: animaCombo.Array.data[0].timeAttak
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 600044140770772803, guid: 2ec0cfb9a6bda43458f540208e384ff3,
-        type: 3}
-      propertyPath: animaCombo.Array.data[1].timeAttak
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 600044140770772803, guid: 2ec0cfb9a6bda43458f540208e384ff3,
-        type: 3}
-      propertyPath: animaCombo.Array.data[2].timeAttak
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 600044140770772803, guid: 2ec0cfb9a6bda43458f540208e384ff3,
-        type: 3}
-      propertyPath: animaCombo.Array.data[3].timeAttak
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 600044142702663048, guid: 2ec0cfb9a6bda43458f540208e384ff3,
         type: 3}
@@ -2698,9 +2676,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemiesPositionSpawn:
   - {fileID: 375829416}
-  - {fileID: 2047220285}
-  - {fileID: 1661556463}
-  - {fileID: 1580152534}
   prefabTest: {fileID: 2725616552951666204, guid: f5cb89e1a0915b6408162bd8d00b817e,
     type: 3}
 --- !u!1 &1343610722

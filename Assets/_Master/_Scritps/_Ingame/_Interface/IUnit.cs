@@ -11,6 +11,8 @@ public interface IUnit
     void UnitDestroy();
     Vector3 Dir { get; set; }
     bool IsReceiveDirective { get; set; }
+    void ApplyDamage(AttackData data);
+
 }
 
 public enum UnitSide

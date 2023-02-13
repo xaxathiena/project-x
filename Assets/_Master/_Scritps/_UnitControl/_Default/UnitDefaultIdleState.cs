@@ -17,9 +17,11 @@ public class  UnitDefaultIdleState : IState
 
     public void OnEnter(params object[] data)
     {
+        Debug.Log("OnEnter idle");
         currentTime = 0f;
         parent.dataBinding.Speed = 0;
         parent.agent.enabled = false;
+        Debug.Log("Obstackle enableed = " + true);
         parent.obsTackle.enabled = true;
     }
 
@@ -47,5 +49,10 @@ public class  UnitDefaultIdleState : IState
 
     public void Dispose()
     {
+    }
+
+    public void OnDrawGizmos()
+    {
+        
     }
 }

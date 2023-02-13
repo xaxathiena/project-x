@@ -21,6 +21,10 @@ public class TowerController : MonoBehaviour, IUnit
 
     public Vector3 Dir { get => transform.forward; set => transform.forward = value; }
     public bool IsReceiveDirective { get; set; }
+    public void ApplyDamage(AttackData data)
+    {
+        throw new NotImplementedException();
+    }
 
     [Header("Setting parameter")] 
     public int numberBullet;

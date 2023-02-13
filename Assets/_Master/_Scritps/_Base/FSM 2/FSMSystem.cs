@@ -5,6 +5,7 @@ namespace StateMachine
 {
     public class FSMSystem : MonoBehaviour
     {
+        public string currentStateStr;
         protected bool isDispose = true;
         public IState currentState;
         public List<IState> states = new List<IState>();

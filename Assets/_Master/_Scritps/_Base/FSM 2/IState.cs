@@ -14,5 +14,6 @@ namespace StateMachine
         void OnFixedUpdate();
         void OnExit();
         void Dispose();
+        void OnDrawGizmos();
     }
 }

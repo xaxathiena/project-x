@@ -12,10 +12,12 @@ public class UnitDefaultMoveState: IState
     [SerializeField]
     private bool move;
     private NavMeshAgent Agent => parent.agent;
-    private NavMeshPath path;
+    public NavMeshPath path;
 
     private float speedMove;
     private IUnit targetUnit;
+
+    public bool isBreakNormalBehauviour = false;
     // private List<Transform> points = new List<Transform>();
     // private int currentPoint = 0;
     // public Vector3 nextPos = Vector3.zero;
@@ -38,6 +40,7 @@ public class UnitDefaultMoveState: IState
         targetUnit = InGameManager.instance.MotherTreePosition;
         move = true;
         parent.agent.enabled = true;
+        Debug.Log("Obstackle enableed = " + false);
         parent.obsTackle.enabled = false;
     }
     
@@ -46,43 +49,65 @@ public class UnitDefaultMoveState: IState
     }
 
     private float delta = 0.01f;
+
     public void OnUpdate()
     {
         if (move)
         {
+
             if (parent.CurrentTarget != null)
             {
-                //Chuyen Qua attack State
-                move = false;
-                Agent.isStopped = true;
-                this.parent.dataBinding.Speed = 0f;
-                this.parent.GotoAttack();
-                //currentData.control.SwiktchAction(Actionkey.ATTACK, currentData);
+                var isInside = parent.position.IsPositionInRange(parent.CurrentTarget.position, parent.attackRange,
+                    parent.CurrentTarget.boderRange);
+                var dir = CalNavmeshDir();
+                if (!isInside)
+                {
+                    MoveByDir(dir);
+                }
+                else
+                {
+                    move = false;
+                    Agent.isStopped = true;
+                    this.parent.dataBinding.Speed = 0f;
+                    var q = Quaternion.LookRotation(dir, Vector3.up);
+                    this.parent.transform.localRotation =
+                        Quaternion.Lerp(this.parent.transform.localRotation, q, Time.deltaTime * 10);
+                    this.parent.GotoAttack();
+                }
+
+                isBreakNormalBehauviour = true;
+
             }
             else
             {
-                // targetPos = targetUnit.position +
-                //             (parent.transform.position - targetUnit.position).normalized *
-                //             targetUnit.boderRange;
-                // Agent.CalculatePath(targetPos,path);
-                // nextPos = path.corners[1];
-                //Move
-                // var dir = (path.corners[1] - this.parent.transform.position).normalized;
-                var q = Quaternion.LookRotation(parent.Dir, Vector3.up);
-                this.parent.transform.localRotation  = Quaternion.Lerp(this.parent.transform.localRotation,q, Time.deltaTime*10);
-                // Debug.LogError(Vector3.Distance(currentData.control.transform.position, agent.nextPosition));
-                // agent.destination = playerTrans.position;
-                
-                this.parent.controller.Move(this.parent.controller.transform.forward.normalized* Time.deltaTime * speedMove);
-                // controlTrans.Translate(Vector3.forward * Time.deltaTime * speedMove);
-                // Debug.LogError("updatePosition: " + agent.updatePosition);
-                this.parent.dataBinding.Speed =speedMove;
-                
+                if (!isBreakNormalBehauviour)
+                {
+                    MoveByDir(parent.Dir);
+                }
+                else
+                {
+                    MoveByDir(CalNavmeshDir());
+                }
             }
         }
     }
 
-   
+    private Vector3 CalNavmeshDir()
+    {
+        Agent.CalculatePath(parent.CurrentTarget.position, path);
+        var dir = ( path.corners[1] - parent.position).normalized;
+        return dir;
+    }
+    private void MoveByDir(Vector3 dir)
+    {
+        var q = Quaternion.LookRotation(dir, Vector3.up);
+        this.parent.transform.localRotation =
+            Quaternion.Lerp(this.parent.transform.localRotation, q, Time.deltaTime * 10);
+
+        this.parent.controller.Move(this.parent.controller.transform.forward.normalized * Time.deltaTime *
+                                    speedMove);
+        this.parent.dataBinding.Speed = speedMove;
+    }
     public void OnLateUpdate()
     {
         
@@ -100,5 +125,10 @@ public class UnitDefaultMoveState: IState
 
     public void Dispose()
     {
+    }
+
+    public void OnDrawGizmos()
+    {
+        
     }
 }
