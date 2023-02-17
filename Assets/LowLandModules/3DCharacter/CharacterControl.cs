@@ -126,7 +126,7 @@ public class CharacterControl : MonoBehaviour, IUnit
         }
         else
         {
-             moveDir = InputManager.moveDir;
+            moveDir = InputManager.moveDir;
             if (moveDir.magnitude > 0)
             {
                 Quaternion q = Quaternion.LookRotation(moveDir, Vector3.up);
