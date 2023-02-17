@@ -107,10 +107,6 @@ public class UnitDefaultControl : FSMSystem, IUnit
     {
         dataBinding.OnUpdate();
         currentTimeToFindNewTarget += Time.deltaTime;
-        if (currentHeal <= 0)
-        {
-            GotoDead();
-        }
     }
 
     public override void SystemFixedUpdate()
@@ -149,6 +145,7 @@ public class UnitDefaultControl : FSMSystem, IUnit
         }
     }
 
+    public int uuid { get; set; }
     public UnitSide unitSide { get => UnitSide.Enemy; }
     public float boderRange { get => 1f; }
     public Vector3 position { get => transform.position; }
@@ -173,8 +170,14 @@ public class UnitDefaultControl : FSMSystem, IUnit
     {
         currentHeal -= data.damage;
         healBarController.SetupHealth(currentHeal, 0, 100);
+        if (currentHeal <= 0)
+        {
+            GotoDead();
+        }
     }
-    
+
+    public bool IsDead { get; set; }
+
     void OnDrawGizmos()
     {
         // Draw a yellow sphere at the transform's position

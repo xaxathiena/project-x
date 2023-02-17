@@ -13,6 +13,7 @@ public class AttackData
 }
 public class CharacterControl : MonoBehaviour, IUnit
 {
+    [SerializeField] private HealBarController healBarController;
     public CharacterController controller;
     public LayerMask maskBG;
     public Transform anchorFootTrackMove;
@@ -30,6 +31,8 @@ public class CharacterControl : MonoBehaviour, IUnit
     public float dame = 5;
     private int indexCombo = 0;
     private bool isFire_;
+    public float currentHealth = 1000;
+    public float maxHealth= 1000;
     private bool IsFire
     {
         set
@@ -98,6 +101,7 @@ public class CharacterControl : MonoBehaviour, IUnit
         }
         InputManager.instance.OnFireHandle+=OnFireHandle;
         UnitSpawn();
+        healBarController.SetupHealth(currentHealth, 0, currentHealth);
     }
 
     void OnFireHandle()
@@ -182,22 +186,8 @@ public class CharacterControl : MonoBehaviour, IUnit
     {
         currentEnemy = null;
         IUnit enemy = null;
-        int enemyMask = 1 << 9;
-        Collider[] hitColliders = Physics.OverlapSphere(trans.position, rangeDetect, enemyMask);
 
         List<EnemyTargetSelect> lstarget = GetTarget(currentAnimationData.angleForce);
-        // foreach (Collider e in hitColliders)
-        // {
-        //     Vector3 dir = e.transform.position - trans.position;
-        //     float dot = Vector3.Dot(trans.forward, dir.normalized);
-        //
-        //     if(dot>=0)
-        //     {
-        //         IUnit enemy_ = e.GetComponent<IUnit>();
-        //         float dis = Vector3.Distance(e.transform.position, trans.position);
-        //         lstarget.Add(new EnemyTargetSelect { enemyControl = enemy_, distance = dis, angle = dot });
-        //     }
-        // }
         lstarget.Sort();
         if(lstarget.Count>0)
         {
@@ -245,16 +235,16 @@ public class CharacterControl : MonoBehaviour, IUnit
             {
                 Vector3 posAim = currentEnemy.position - dir.normalized * currentEnemy.boderRange;
         
-                trans.DOMove(posAim, currentAnimationData.timeAttak).OnComplete(ApplyDamage);
+                trans.DOMove(posAim, currentAnimationData.timeAttak).OnComplete(AttackDamge);
             }
             else
             {
-                trans.DOMove(trans.position,currentAnimationData.timeAttak).OnComplete(ApplyDamage);
+                trans.DOMove(trans.position,currentAnimationData.timeAttak).OnComplete(AttackDamge);
             }
         
         }
     }
-    private void ApplyDamage()
+    private void AttackDamge()
     {
         List<EnemyTargetSelect> ls = GetTarget(currentAnimationData.angleForce);
         AttackData attackData = new AttackData
@@ -282,6 +272,7 @@ public class CharacterControl : MonoBehaviour, IUnit
 #endif
 
 
+    public int uuid { get; set; }
     public UnitSide unitSide { get => UnitSide.Ally; }
     public float boderRange { get => 2f; }
     public Vector3 position { get => trans.position; }
@@ -300,8 +291,11 @@ public class CharacterControl : MonoBehaviour, IUnit
     public bool IsReceiveDirective { get; set; }
     public void ApplyDamage(AttackData data)
     {
-        throw new System.NotImplementedException();
+        currentHealth -= data.damage;
+        healBarController.SetupHealth(currentHealth, 0, maxHealth);
     }
+
+    public bool IsDead { get; set; }
 }
 
 public class EnemyTargetSelect: System.IComparable<EnemyTargetSelect>

@@ -47,7 +47,6 @@ public class InputManager : MonoBehaviour
         }
         moveDir.x = _x;
         moveDir.z = _y;
-        Debug.Log(moveDir);
     }
     // Update is called once per frame
     #region Old version

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,9 +16,15 @@ public class HealBarController : MonoBehaviour
     private bool isStartDelay = false;
     private float currentRatio;
     private Camera mainCamera;
-    public void InitHealBar()
+
+    private void Start()
     {
         mainCamera = Camera.main;
+    }
+
+    public void InitHealBar()
+    {
+        
         realHealthImg.fillAmount = 1f;
         delayHealthImg.fillAmount = 1f;
         if (isAlwayShow)

@@ -22,6 +22,11 @@
             parent.agent.enabled = false;
             Debug.Log("Obstackle enableed = " + true);
             parent.obsTackle.enabled = true;
+            parent.CurrentTarget.ApplyDamage(new AttackData()
+            {
+                damage = 10,
+                unit = parent.CurrentTarget
+            });
         }
 
         public void OnEnterFromSameState(params object[] data)
@@ -49,6 +54,11 @@
                         currentTime = 0;
                         this.parent.dataBinding.Speed = 0f;
                         parent.dataBinding.Attack = true;
+                        parent.CurrentTarget.ApplyDamage(new AttackData()
+                        {
+                            damage = 10,
+                            unit = parent.CurrentTarget
+                        });
                     }
                     else
                     {

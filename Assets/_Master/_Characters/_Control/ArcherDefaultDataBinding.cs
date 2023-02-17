@@ -20,7 +20,7 @@ public class ArcherDefaultDataBinding : MonoBehaviour
             {
                 animator.applyRootMotion = false;
                 animator.SetTrigger(key_Fire);
-
+                SpeedMove = 0f;
             }
         }
     }

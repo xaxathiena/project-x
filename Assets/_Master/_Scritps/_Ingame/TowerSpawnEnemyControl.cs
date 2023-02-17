@@ -20,7 +20,7 @@ public class TowerSpawnEnemyControl : MonoBehaviour
             var newUnit = Instantiate(prefabTest);
             newUnit.transform.position = enemiesPositionSpawn[i].position;
             newUnit.transform.forward = enemiesPositionSpawn[i].right;
-            UnitsManager.instance.units.Add(newUnit);
+            UnitsManager.instance.AddUnit(newUnit);
         }
     }
 }

@@ -64,7 +64,31 @@ public class BulletControl : MonoBehaviour
         InGameManager.instance.StartCoroutine(IERun(distance / speed, 
             Quaternion.LookRotation((startPosition - targetPosition ).normalized)));
     }
-
+    public void Spawn()
+    {
+        this.data = data;
+        this.startPosition = startPosition;
+        this.targetPosition = targetPosition;
+        gameObject.SetActive(true);
+        if (realBulletParticle == null)
+        {
+            var realBullet = Instantiate(bulletPrefab, transform);
+            realBulletParticle = realBullet.GetComponent<ParticleSystem>();
+            var realMuzzle = Instantiate(muzzlePrefab, transform);
+            realMuzzle.gameObject.SetActive(false);
+            realMuzzleParticle = realMuzzle.GetComponent<ParticleSystem>();
+            var realImpact = Instantiate(impactPrefab, transform);
+            realImpactParticle = realImpact.GetComponent<ParticleSystem>();
+            realImpact.gameObject.SetActive(false);
+        }
+        
+        realBulletParticle.transform.localPosition= Vector3.zero;
+        realMuzzleParticle.transform.localPosition= Vector3.zero;
+        realImpactParticle.transform.localPosition= Vector3.zero;
+        realBulletParticle.transform.localScale= Vector3.one;
+        realMuzzleParticle.transform.localScale= Vector3.one;
+        realImpactParticle.transform.localScale= Vector3.one;
+    }
     private IEnumerator IERun(float duration, Quaternion q)
     {
         bool isDone = false;
@@ -76,7 +100,7 @@ public class BulletControl : MonoBehaviour
             realMuzzleParticle.Play();
             realImpactParticle.Play();
             isDone = true;
-            this.data.unit.ApplyDamage(this.data);
+            this.data.unit?.ApplyDamage(this.data);
         }); 
         yield return new WaitUntil(() => isDone);
         yield return new WaitForSeconds(0.3f);

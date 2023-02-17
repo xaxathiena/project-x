@@ -6,27 +6,24 @@ using UnityEngine;
 
 public class TowerController : MonoBehaviour, IUnit
 {
+    public HealBarController healBarController;
+    public int uuid { get; set; }
     public UnitSide unitSide { get => UnitSide.Ally; }
     public float boderRange { get => 5f; }
     public Vector3 position { get => transform.position; }
     public Quaternion rotation { get => transform.rotation; }
     public float dame;
-    public void UnitSpawn()
-    {
-        UnitsManager.instance.AddTower(this);
-    }
-
-    public void UnitDestroy()
-    {
-        UnitsManager.instance.RemoveTower(this);
-    }
+    
 
     public Vector3 Dir { get => transform.forward; set => transform.forward = value; }
     public bool IsReceiveDirective { get; set; }
     public void ApplyDamage(AttackData data)
     {
-        throw new NotImplementedException();
+        currentHealth -= data.damage;
+        healBarController.SetupHealth(currentHealth, 0, maxHealth);
     }
+
+    public bool IsDead { get; set; }
 
     [Header("Setting parameter")] 
     public int numberBullet;
@@ -40,11 +37,14 @@ public class TowerController : MonoBehaviour, IUnit
     private float timeToAttack = .2f;
     private float currentTime = 0f;
     private bool isAttacking = false;
+    private float currentHealth = 1000000;
+    private float maxHealth = 1000000;
     private void Start()
     {
         IsReceiveDirective = false;
         currentTime = 0f;
         UnitSpawn();
+        healBarController.SetupHealth(currentHealth, 0, maxHealth);
     }
 
     private void Update()
@@ -113,7 +113,15 @@ public class TowerController : MonoBehaviour, IUnit
         Gizmos.DrawWireSphere(transform.position, boderRange);
     }
 
-    
+    public void UnitSpawn()
+    {
+        UnitsManager.instance.AddTower(this);
+    }
+
+    public void UnitDestroy()
+    {
+        UnitsManager.instance.RemoveTower(this);
+    }
 }
 
 // public class ComparePosition : IComparer<>
