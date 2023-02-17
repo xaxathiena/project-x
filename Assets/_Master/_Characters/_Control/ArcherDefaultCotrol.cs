@@ -73,6 +73,7 @@ public class ArcherDefaultCotrol : MonoBehaviour, IUnit
         get => isFire;
     }
 
+    
     private IEnumerator  Start()
     {
         trans = transform;  

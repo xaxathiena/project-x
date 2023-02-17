@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Master/_Scenes/MainInGame.unity
     guid: 52969d783e29d484088da04da8ca3ced
+  - enabled: 0
+    path: Assets/_Master/_Scenes/DemoCharacter.unity
+    guid: 9c8bfab316f13f444b70d34b332a8dc0
   m_configObjects: {}

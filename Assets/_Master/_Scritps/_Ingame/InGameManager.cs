@@ -22,10 +22,13 @@ public class InGameManager : Singleton<InGameManager>
         currentTime = 0;
         if(isSpawn )
             TimeToSpawnUnitsEvent?.Invoke();
-        var go = Instantiate(characterPrefab);
-        go.transform.position = characterPosition.position;
-        targetCamera.target = go.transform;
-        targetCamera.isFlowTarget = true;
+        if (characterPrefab != null)
+        {
+            var go = Instantiate(characterPrefab);
+            go.transform.position = characterPosition.position;
+            targetCamera.target = go.transform;
+            targetCamera.isFlowTarget = true;
+        }
     }
 
     private void Update()
