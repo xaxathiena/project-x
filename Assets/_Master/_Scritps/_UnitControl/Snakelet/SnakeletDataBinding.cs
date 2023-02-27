@@ -1,10 +1,7 @@
-    using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class  UnitDefaultDataBinding
-{ 
+public class SnakeletDataBinding : MonoBehaviour
+{
     private Animator animator { get; set; }
     private int key_Speed;
     private int key_IsDead;
@@ -55,5 +52,4 @@ public class  UnitDefaultDataBinding
     {
         
     }
-   
 }

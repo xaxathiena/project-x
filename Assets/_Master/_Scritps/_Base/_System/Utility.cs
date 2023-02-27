@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public static class Compare
@@ -26,5 +28,16 @@ public static class Utility
     public static float sqr(this float value)
     {
         return value * value;
+    }
+
+    public static void DelayToDo(float time, Action action)
+    {
+        DontDestroyOnLoad.Instance.StartCoroutine(IEDeplay(time, action));
+    }
+
+    private static IEnumerator IEDeplay(float time, Action action)
+    {
+        yield return new WaitForSeconds(time);
+        action?.Invoke();
     }
 }

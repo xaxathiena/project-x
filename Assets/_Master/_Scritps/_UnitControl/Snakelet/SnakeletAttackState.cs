@@ -1,10 +1,9 @@
-﻿
-    using StateMachine;
-    using UnityEngine;
+﻿using StateMachine;
+using UnityEngine;
 
-    public class UnitDefaultAttackState : IState
-    {
-        public UnitDefaultControl parent;
+public class SnakeletAttackState : IState
+{
+        public SnakeletControl parent;
 
         private float currentTime;
         private float rof = 0.3f;
@@ -22,7 +21,8 @@
             parent.agent.enabled = false;
             Debug.Log("Obstackle enableed = " + true);
             parent.obsTackle.enabled = true;
-            parent.CurrentTarget.ApplyDamage(new AttackData()
+            var bullet = PoolManager.instance.GetPool<BulletControl>(parent.bulletName);
+            bullet.Fire(parent.fireStartPivot.position, parent.CurrentTarget.position, parent.bulletSpeed, new AttackData()
             {
                 damage = 10,
                 unit = parent.CurrentTarget
@@ -55,7 +55,8 @@
                         currentTime = 0;
                         this.parent.dataBinding.Speed = 0f;
                         parent.dataBinding.Attack = true;
-                        parent.CurrentTarget.ApplyDamage(new AttackData()
+                        var bullet = PoolManager.instance.GetPool<BulletControl>(parent.bulletName);
+                        bullet.Fire(parent.fireStartPivot.position, parent.CurrentTarget.position, parent.bulletSpeed, new AttackData()
                         {
                             damage = 10,
                             unit = parent.CurrentTarget
@@ -75,6 +76,13 @@
 
         public void OnFixedUpdate()
         {
+            if (parent.CurrentTarget != null)
+            {
+                var dir = parent.CurrentTarget.position - parent.position; 
+                var q = Quaternion.LookRotation(dir.normalized, Vector3.up);
+                this.parent.transform.localRotation =
+                    Quaternion.Lerp(this.parent.transform.localRotation, q, Time.deltaTime * 10);
+            }
         }
 
         public void OnExit()
@@ -90,4 +98,4 @@
         {
             
         }
-    }
+}
