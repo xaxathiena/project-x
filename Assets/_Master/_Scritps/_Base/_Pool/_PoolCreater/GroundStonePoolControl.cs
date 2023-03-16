@@ -5,10 +5,6 @@ using UnityEngine;
 using UniRx;
 public class GroundStonePoolControl : ObjectPoolControl
 {
-    private GameObject mainObj;
-    [SerializeField]
-    private float duration = 1.5f;
-
     private DataObjectPool data;
     public override void OnPlay(DataObjectPool data)
     {

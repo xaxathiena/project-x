@@ -17,23 +17,23 @@ MonoBehaviour:
     name: cat
     type: 0
     dame: 100
-    rof: 200
+    rof: 0.5
     health: 1000
     detectRange: 100
-    attackRange: 10
+    attackRange: 1
     speedMove: 2
-    boderRange: 2
+    boderRange: 1
     bulletName: 
     bulletSpeed: 0
   - id: 2
     name: snakesmall
     type: 1
     dame: 100
-    rof: 200
+    rof: 0.3
     health: 1000
     detectRange: 100
     attackRange: 10
     speedMove: 2
-    boderRange: 2
+    boderRange: 1
     bulletName: testPool
-    bulletSpeed: 25
+    bulletSpeed: 50

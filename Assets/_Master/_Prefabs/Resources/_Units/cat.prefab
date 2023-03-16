@@ -921,6 +921,7 @@ MonoBehaviour:
   deadState:
     parent: {fileID: 0}
   amin: {fileID: 7004452283649549403}
+  isCharacterFirst: 1
   agent: {fileID: 280644778}
   obsTackle: {fileID: 838129153004144422}
   controller: {fileID: 7033818572973575669}

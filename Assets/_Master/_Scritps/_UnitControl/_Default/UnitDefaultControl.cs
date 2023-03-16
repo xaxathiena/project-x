@@ -19,6 +19,8 @@ public class UnitDefaultControl : FSMSystem, IUnit
     public UnitDefaultDeadState deadState;
     [Space(10)] 
     [SerializeField] private Animator amin;
+
+    [SerializeField] private bool isCharacterFirst;
     public NavMeshAgent agent;
     public NavMeshObstacle obsTackle;
     public UnitDefaultDataBinding dataBinding;
@@ -32,9 +34,6 @@ public class UnitDefaultControl : FSMSystem, IUnit
     private float currentTimeToFindNewTarget = 0f;
     private Vector3 dir = Vector3.right;
     
-    public float attackRange = 3;
-    public float detectRange = 10;
-    public float rof = 0.3f;
     public List<Transform> positionsPath;
     
     public IUnit CurrentTarget => currentTarget;
@@ -113,17 +112,43 @@ public class UnitDefaultControl : FSMSystem, IUnit
 
     public override void SystemFixedUpdate()
     {
-        FindNewTarget();
+        if (isCharacterFirst)
+        {
+            FindNewCharacter();
+        }
+        else
+        {
+            FindNewTarget();
+            
+        }
         dataBinding.OnFixedUpdate();
     }
-    
+    private void FindNewCharacter()
+    {
+        if (currentTimeToFindNewTarget > timeToFindNewTarget)
+        {
+            currentTimeToFindNewTarget = 0f;
+            tempResult.Clear();
+            UnitsManager.instance.GetUnitInRange(ref tempResult, transform.position, float.MaxValue,
+                unitSide);
+            if (tempResult.Count > 0)
+            {
+                tempResult.Sort(ComparePosition);
+                currentTarget = tempResult[0];
+            }
+            else
+            {
+                GotoIdle();
+            }
+        }
+    }
     private void FindNewTarget()
     {
         if (currentTimeToFindNewTarget > timeToFindNewTarget)
         {
             currentTimeToFindNewTarget = 0f;
             tempResult.Clear();
-            UnitsManager.instance.GetUnitInRange(ref tempResult, transform.position, detectRange,
+            UnitsManager.instance.GetUnitInRange(ref tempResult, transform.position, data.config.DetectRange,
                 unitSide);
             if (tempResult.Count == 0)
             {
@@ -133,7 +158,7 @@ public class UnitDefaultControl : FSMSystem, IUnit
                 }
                 else
                 {
-                    UnitsManager.instance.GetTowerInRange(ref tempResult, transform.position, detectRange,
+                    UnitsManager.instance.GetTowerInRange(ref tempResult, transform.position, data.config.DetectRange,
                         unitSide);
                     
                 }
@@ -188,9 +213,9 @@ public class UnitDefaultControl : FSMSystem, IUnit
     {
         // Draw a yellow sphere at the transform's position
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, detectRange);
+        Gizmos.DrawWireSphere(transform.position, data.config.DetectRange);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(transform.position, data.config.AttackRange);
         if (Application.isPlaying)
         {
             if (moveState.path.corners.Length > 1)

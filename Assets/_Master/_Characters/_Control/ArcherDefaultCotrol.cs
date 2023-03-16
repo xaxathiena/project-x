@@ -78,14 +78,14 @@ public class ArcherDefaultCotrol : MonoBehaviour, IUnit
     private IEnumerator  Start()
     {
         trans = transform;  
-        InputManager.instance.OnFireHandle+=OnFireHandle;
+        InputManager.instance.OnFireEvent+=OnFireEvent;
         yield return null;
         targetDir = trans.localRotation;
         UnitSpawn();
         healBarController.SetupHealth(maxHealth, 0, currentHealth);
     }
 
-    private void OnFireHandle()
+    private void OnFireEvent()
     {
         if (IsFire) return;
         IsFire = true;

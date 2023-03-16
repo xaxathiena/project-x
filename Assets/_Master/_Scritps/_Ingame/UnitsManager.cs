@@ -31,7 +31,7 @@ public class UnitsManager : Singleton<UnitsManager>
     }
     public void RemoveUnit(IUnit unit)
     {
-          unit.IsDead = true;
+        unit.IsDead = true;
         var unitIndex = units.FindIndex(i => i.uuid == unit.uuid);
         if (unitIndex != -1)
         {

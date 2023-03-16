@@ -18,6 +18,7 @@ public class SnakeletControl : UnitControlBase
     public SnakeletDeadState deadState;
     [Space(10)] 
     [SerializeField] private Animator amin;
+    [SerializeField] private bool isCharacterFirst;
     public NavMeshAgent agent;
     public NavMeshObstacle obsTackle;
     public SnakeletDataBinding dataBinding;
@@ -115,10 +116,36 @@ public class SnakeletControl : UnitControlBase
 
     public override void SystemFixedUpdate()
     {
-        FindNewTarget();
+        if (isCharacterFirst)
+        {
+            FindNewCharacter();
+        }
+        else
+        {
+            FindNewTarget();
+            
+        }
         dataBinding.OnFixedUpdate();
     }
-    
+    private void FindNewCharacter()
+    {
+        if (currentTimeToFindNewTarget > timeToFindNewTarget)
+        {
+            currentTimeToFindNewTarget = 0f;
+            tempResult.Clear();
+            UnitsManager.instance.GetUnitInRange(ref tempResult, transform.position, float.MaxValue,
+                unitSide);
+            if (tempResult.Count > 0)
+            {
+                tempResult.Sort(ComparePosition);
+                currentTarget = tempResult[0];
+            }
+            else
+            {
+                GotoIdle();
+            }
+        }
+    }
     private void FindNewTarget()
     {
         if (currentTimeToFindNewTarget > timeToFindNewTarget)

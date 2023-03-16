@@ -65,7 +65,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2048
   anchorFootTrackMove: {fileID: 5456691228717807254}
-  rangeDetect: 3
+  rangeDetect: 10
   dataBiding: {fileID: 4893661498888495249}
   animaCombo:
   - timeAttak: 0.2

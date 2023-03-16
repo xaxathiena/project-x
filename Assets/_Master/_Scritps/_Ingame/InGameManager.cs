@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class InGameManager : Singleton<InGameManager>
 {
@@ -17,7 +18,8 @@ public class InGameManager : Singleton<InGameManager>
     [SerializeField] private Transform characterPosition;
     [SerializeField] private TargetCamControl targetCamera;
     [SerializeField] private Vector2 xBoder;
-    [FormerlySerializedAs("yBoder")] [SerializeField] private Vector2 zBoder;
+    [SerializeField] private Vector2 zBoder;
+    
     
     public IUnit MotherTreePosition => theMortherTree;
 
@@ -32,11 +34,41 @@ public class InGameManager : Singleton<InGameManager>
             targetCamera.isFlowTarget = true;
         }
     }
-
+    
+    
+    
     public Vector3 ClaimPositionInMap(Vector3 position)
     {
         position.x = Mathf.Clamp(position.x, xBoder.x + 0.5f, xBoder.y -0.5f);
         position.z = Mathf.Clamp(position.z, zBoder.x + 0.5f, zBoder.y - 0.5f);
+        return position;
+    }
+
+    public Vector3 GetPositionInBoder()
+    {
+        Vector3 position = Vector3.zero;
+        position.y = 0;
+        int pos = Random.Range(0, 4);
+        float border = 5;
+        switch (pos)
+        {
+            case 0:
+                position.x = xBoder.x + border;
+                position.z = Random.Range(zBoder.x + border, zBoder.y - border);
+                break;
+            case 1:
+                position.x = xBoder.y - border;
+                position.z = Random.Range(zBoder.x + border, zBoder.y - border);
+                break;
+            case 2:
+                position.x = Random.Range(xBoder.x + border, xBoder.y -border);
+                position.z = zBoder.x + border;
+                break;
+            case 3:
+                position.x = Random.Range(xBoder.x + border, xBoder.y - border);
+                position.z = zBoder.y - border;
+                break;
+        }
         return position;
     }
     private void OnDrawGizmos()

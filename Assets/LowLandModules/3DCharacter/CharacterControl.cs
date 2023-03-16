@@ -114,12 +114,41 @@ public class CharacterControl : MonoBehaviour, IUnit
         {
             dicAnimCombo.Add(e.index, e);
         }
-        InputManager.instance.OnFireHandle+=OnFireHandle;
+        InputManager.instance.OnFireEvent+=OnFireEvent;
+        InputManager.instance.OnSkillEvent += OnSkillHandle;
+        InputManager.instance.OnDashEvent += OnDashHandle;
         UnitSpawn();
         healBarController.SetupHealth(currentHealth, 0, currentHealth);
     }
 
-    void OnFireHandle()
+    private void OnDashHandle()
+    {
+        if (!isSkilling)
+        {
+            Dash();
+        }
+    }
+
+    private void OnSkillHandle(int skillIndex)
+    {
+        if (!isSkilling)
+        {
+            switch (skillIndex)
+            {
+                case 1:
+                    SkillOne();
+                    break;
+                case 2:
+                    SkillTwo();
+                    break;
+                case 3:
+                    SkillThree();
+                    break;
+            }
+        }
+    }
+
+    void OnFireEvent()
     {
         if (IsFire || isSkilling)
             return;
@@ -131,26 +160,6 @@ public class CharacterControl : MonoBehaviour, IUnit
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && !isSkilling)
-        {
-            Dash();
-        }
-        if (Input.GetKeyDown(KeyCode.U) && !isSkilling)
-        {
-            UpLevelEffect();
-        }
-        if (Input.GetKeyDown(KeyCode.Z) && !isSkilling)
-        {
-            SkillOne();
-        }
-        if (Input.GetKeyDown(KeyCode.X) && !isSkilling)
-        {
-            SkillTwo();
-        }
-        if (Input.GetKeyDown(KeyCode.C) && !isSkilling)
-        {
-            SkillThree();
-        }
         Vector3 moveDir = Vector3.zero;
         // atack 
         timeCount += Time.deltaTime;
@@ -297,11 +306,13 @@ public class CharacterControl : MonoBehaviour, IUnit
     {
 
         int enemyMask = 1 << 9;
+        enemyInRange.Clear();
         UnitsManager.instance.GetUnitInRange(ref enemyInRange, trans.position, rangeDetect, unitSide );
         
         // Collider[] hitColliders = Physics.OverlapSphere(trans.position, rangeDetect, enemyMask);
 
         List<EnemyTargetSelect> lstarget = new List<EnemyTargetSelect>();
+        Debug.Log("enemyInRange count " + enemyInRange.Count);
         foreach (IUnit e in enemyInRange)
         {
             Vector3 dir = e.position - trans.position;
@@ -313,8 +324,8 @@ public class CharacterControl : MonoBehaviour, IUnit
                 lstarget.Add(new EnemyTargetSelect { enemyControl = e, distance = dis, angle = dot });
             }
         }
+        Debug.Log("lstarget count " + lstarget.Count);
         lstarget.Sort();
-
 
         return lstarget;
     }
@@ -411,7 +422,6 @@ public class CharacterControl : MonoBehaviour, IUnit
 
     public void UnitDestroy()
     {
-        throw new System.NotImplementedException();
     }
 
     public Vector3 Dir { get; set; }

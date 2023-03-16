@@ -57,7 +57,7 @@ public class UnitDefaultMoveState: IState
 
             if (parent.CurrentTarget != null)
             {
-                var isInside = parent.position.IsPositionInRange(parent.CurrentTarget.position, parent.attackRange,
+                var isInside = parent.position.IsPositionInRange(parent.CurrentTarget.position, parent.Data.config.AttackRange,
                     parent.CurrentTarget.boderRange);
                 var dir = CalNavmeshDir();
                 if (!isInside)

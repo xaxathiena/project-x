@@ -18,6 +18,7 @@ namespace PolygonArsenal
         void Start()
         {
             //Spawn the sound object
+            if (prefabSound == null) return;
             GameObject m_Sound = Instantiate(prefabSound, transform.position, Quaternion.identity);
             AudioSource m_Source = m_Sound.GetComponent<AudioSource>();
 

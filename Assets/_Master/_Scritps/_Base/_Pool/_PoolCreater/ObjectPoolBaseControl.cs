@@ -6,9 +6,7 @@ using UnityEngine;
 
 public class ObjectPoolBaseControl : ObjectPoolControl
 {
-    private GameObject mainObj;
-    [SerializeField]
-    private float duration = 1.5f;
+    
 
     private DataObjectPool data;
     public override void OnPlay(DataObjectPool data)
@@ -23,9 +21,12 @@ public class ObjectPoolBaseControl : ObjectPoolControl
 
         transform.position = this.data.position;
         transform.rotation = this.data.rotation;
-        Observable.Timer(TimeSpan.FromSeconds(this.data.timeLife)).Subscribe(_ =>
+        if (this.data.timeLife > 0)
         {
-            gameObject.SetActive(false);
-        });
+            Observable.Timer(TimeSpan.FromSeconds(this.data.timeLife)).Subscribe(_ =>
+            {
+                gameObject.SetActive(false);
+            });
+        }
     }
 }

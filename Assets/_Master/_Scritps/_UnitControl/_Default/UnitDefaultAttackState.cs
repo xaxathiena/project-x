@@ -43,9 +43,9 @@
             }
             else
             {
-                var isInside = parent.position.IsPositionInRange(parent.CurrentTarget.position, parent.attackRange,
+                var isInside = parent.position.IsPositionInRange(parent.CurrentTarget.position, parent.Data.config.AttackRange,
                     parent.CurrentTarget.boderRange);
-                if (currentTime > parent.rof)
+                if (currentTime > parent.Data.config.Rof)
                 {
                     if (isInside)
                     {

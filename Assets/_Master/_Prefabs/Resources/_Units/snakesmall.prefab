@@ -1410,6 +1410,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentStateStr: 
   amin: {fileID: 4707392404472071998}
+  isCharacterFirst: 1
   agent: {fileID: 1306766439}
   obsTackle: {fileID: 1306766438}
   dataBinding: {fileID: 1306766440}

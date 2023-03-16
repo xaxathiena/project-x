@@ -53,6 +53,7 @@ public class CustomPool<T> : IDisposable where T: MonoBehaviour
         if (trans.gameObject.activeInHierarchy)
         {
             index = -1;
+            Debug.Log("canExpand activeInHierarchy");
             if (canExpand)
             {
                 var transObj = MonoBehaviour.Instantiate(prefab, Vector3.zero, Quaternion.identity, this.parent);
