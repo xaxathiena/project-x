@@ -10,6 +10,7 @@ using UnityEngine.Serialization;
 
 public class UnitDefaultControl : FSMSystem, IUnit
 {
+    protected UnitData data;
     [Header("Setup state")]
     public UnitDefaultSpawnState spawState;
     public UnitDefaultIdleState idleState;
@@ -40,6 +41,7 @@ public class UnitDefaultControl : FSMSystem, IUnit
     public Renderer[] mat;
 
     public Collider collider;
+    public  UnitData Data => data;
     private void Start()
     {
         IsReceiveDirective = true;
@@ -177,6 +179,10 @@ public class UnitDefaultControl : FSMSystem, IUnit
     }
 
     public bool IsDead { get; set; }
+    public void OnSetup(UnitData data)
+    {
+        this.data = data;
+    }
 
     void OnDrawGizmos()
     {
@@ -185,12 +191,15 @@ public class UnitDefaultControl : FSMSystem, IUnit
         Gizmos.DrawWireSphere(transform.position, detectRange);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
-        if (moveState.path.corners.Length > 1)
+        if (Application.isPlaying)
         {
-            Gizmos.color = Color.yellow;
-            for (int i = 0; i < moveState.path.corners.Length - 1; i++)
+            if (moveState.path.corners.Length > 1)
             {
-                Gizmos.DrawLine(moveState.path.corners[i], moveState.path.corners[i +1]);
+                Gizmos.color = Color.yellow;
+                for (int i = 0; i < moveState.path.corners.Length - 1; i++)
+                {
+                    Gizmos.DrawLine(moveState.path.corners[i], moveState.path.corners[i +1]);
+                }
             }
         }
     }

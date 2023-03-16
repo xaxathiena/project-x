@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class InGameManager : Singleton<InGameManager>
 {
@@ -15,13 +16,14 @@ public class InGameManager : Singleton<InGameManager>
     [SerializeField] private GameObject characterPrefab;
     [SerializeField] private Transform characterPosition;
     [SerializeField] private TargetCamControl targetCamera;
+    [SerializeField] private Vector2 xBoder;
+    [FormerlySerializedAs("yBoder")] [SerializeField] private Vector2 zBoder;
+    
     public IUnit MotherTreePosition => theMortherTree;
 
     public void Start()
     {
         currentTime = 0;
-        if(isSpawn )
-            TimeToSpawnUnitsEvent?.Invoke();
         if (characterPrefab != null)
         {
             var go = Instantiate(characterPrefab);
@@ -31,14 +33,24 @@ public class InGameManager : Singleton<InGameManager>
         }
     }
 
-    private void Update()
+    public Vector3 ClaimPositionInMap(Vector3 position)
     {
-        currentTime += Time.deltaTime;
-        if (currentTime > timeToSpawn)
-        {
-            currentTime = 0f;
-            if(UnitsManager.instance.units.Count < maxUnitSpawn && isSpawn )
-                TimeToSpawnUnitsEvent?.Invoke();
-        }
+        position.x = Mathf.Clamp(position.x, xBoder.x + 0.5f, xBoder.y -0.5f);
+        position.z = Mathf.Clamp(position.z, zBoder.x + 0.5f, zBoder.y - 0.5f);
+        return position;
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(new Vector3(xBoder.x, 1, zBoder.x), new Vector3(xBoder.x, 1, zBoder.y));
+        Gizmos.DrawLine(new Vector3(xBoder.y, 1, zBoder.x), new Vector3(xBoder.y, 1, zBoder.y));
+        Gizmos.DrawLine(new Vector3(xBoder.x, 1, zBoder.x), new Vector3(xBoder.y, 1, zBoder.x));
+        Gizmos.DrawLine(new Vector3(xBoder.x, 1, zBoder.y), new Vector3(xBoder.y, 1, zBoder.y));
+        
+        
+        
+        Gizmos.DrawLine(new Vector3(xBoder.x, 3, zBoder.x), new Vector3(xBoder.x, 3, zBoder.y));
+        Gizmos.DrawLine(new Vector3(xBoder.y, 3, zBoder.x), new Vector3(xBoder.y, 3, zBoder.y));
+        Gizmos.DrawLine(new Vector3(xBoder.x, 3, zBoder.x), new Vector3(xBoder.y, 3, zBoder.x));
+        Gizmos.DrawLine(new Vector3(xBoder.x, 3, zBoder.y), new Vector3(xBoder.y, 3, zBoder.y));
     }
 }

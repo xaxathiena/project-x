@@ -1,2 +1,2 @@
-id,idUnits
-1,"1,1,1,1"
+id,meleUnits,rangerUnits,waveDuration
+1,1,2,10

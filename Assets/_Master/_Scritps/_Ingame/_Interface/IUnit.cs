@@ -14,6 +14,7 @@ public interface IUnit
     bool IsReceiveDirective { get; set; }
     void ApplyDamage(AttackData data);
     bool IsDead { get; set; }
+    void OnSetup(UnitData data);
 
 }
 
@@ -21,4 +22,9 @@ public enum UnitSide
 {
     Enemy,
     Ally
+}
+
+public class UnitData
+{
+    public UnitRecord config;
 }

@@ -191,7 +191,8 @@ public class PoolChunkManager<T> where T: MonoBehaviour
 public class PoolManager : Singleton<PoolManager>
 {
     private PoolChunkManager<BulletControl> _bulletControl = new PoolChunkManager<BulletControl>();
-    public PoolChunkManager<BulletControl> BulletControl => _bulletControl;
+    private PoolChunkManager<PowerBulletControl> _powerBallControl = new PoolChunkManager<PowerBulletControl>();
+    private PoolChunkManager<ObjectPoolControl> _ObjectPoolControl = new PoolChunkManager<ObjectPoolControl>();
     
     public object GetPoolChunkManager<T>() where T: MonoBehaviour
     {
@@ -200,7 +201,15 @@ public class PoolManager : Singleton<PoolManager>
         {
             return _bulletControl;
         }
+        if (getType == typeof(PowerBulletControl))
+        {
+            return _powerBallControl;
+        }
 
+        if (getType == typeof(ObjectPoolControl))
+        {
+            return _ObjectPoolControl;
+        }
         return default;
     }
     public T GetPool<T>(string namePool, Transform parent = null) where T: MonoBehaviour
@@ -210,16 +219,15 @@ public class PoolManager : Singleton<PoolManager>
         {
             return _bulletControl.GetPool<T>(namePool, parent);
         }
+        if (getType == typeof(PowerBulletControl))
+        {
+            return _powerBallControl.GetPool<T>(namePool, parent);
+        }
+        if (getType == typeof(ObjectPoolControl))
+        {
+            return _ObjectPoolControl.GetPool<T>(namePool, parent);;
+        }
         return default;
-    }
-
-    private void Update()
-    {
-        // if (Input.GetKeyDown(KeyCode.F))
-        // {
-        //     var bullet = GetPool<BulletControl>("testPool", null);
-        //     bullet.Fire(Vector3.zero, Vector3.one * 5, 10);
-        // }        
     }
 }
 

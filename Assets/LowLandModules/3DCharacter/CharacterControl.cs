@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -9,11 +10,22 @@ public class AttackData
     public float force;
     public Transform trans;
     public IUnit unit;
+    public LayerMask mask;
 
 }
 public class CharacterControl : MonoBehaviour, IUnit
 {
     [SerializeField] private HealBarController healBarController;
+    [SerializeField] private Transform poitToCastSkill;
+    [SerializeField] private string pwBallName;
+    [SerializeField] private string pwBallNameSmall;
+    [Range(3,10)]
+    [SerializeField] private float dashDistance = 4f;
+    [Range(0.1f, 1f)]
+    [SerializeField] private float timeDash = 0.1f;
+
+    [SerializeField] private GameObject trailObj;
+    private UnitData data;
     public CharacterController controller;
     public LayerMask maskBG;
     public Transform anchorFootTrackMove;
@@ -33,6 +45,9 @@ public class CharacterControl : MonoBehaviour, IUnit
     private bool isFire_;
     public float currentHealth = 1000;
     public float maxHealth= 1000;
+    
+    private bool isSkilling = false;
+    
     private bool IsFire
     {
         set
@@ -106,7 +121,7 @@ public class CharacterControl : MonoBehaviour, IUnit
 
     void OnFireHandle()
     {
-        if (IsFire)
+        if (IsFire || isSkilling)
             return;
         IsFire = true;
       
@@ -116,7 +131,26 @@ public class CharacterControl : MonoBehaviour, IUnit
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.F) && !isSkilling)
+        {
+            Dash();
+        }
+        if (Input.GetKeyDown(KeyCode.U) && !isSkilling)
+        {
+            UpLevelEffect();
+        }
+        if (Input.GetKeyDown(KeyCode.Z) && !isSkilling)
+        {
+            SkillOne();
+        }
+        if (Input.GetKeyDown(KeyCode.X) && !isSkilling)
+        {
+            SkillTwo();
+        }
+        if (Input.GetKeyDown(KeyCode.C) && !isSkilling)
+        {
+            SkillThree();
+        }
         Vector3 moveDir = Vector3.zero;
         // atack 
         timeCount += Time.deltaTime;
@@ -128,7 +162,7 @@ public class CharacterControl : MonoBehaviour, IUnit
                 IsFire = false;
             }
         }
-        else
+        else if(!isSkilling)
         {
             moveDir = InputManager.moveDir;
             if (moveDir.magnitude > 0)
@@ -149,6 +183,7 @@ public class CharacterControl : MonoBehaviour, IUnit
                 moveDir.y = -1f;
             }
             controller.Move(moveDir * Time.deltaTime * speedMove);
+            //trans.position = InGameManager.instance.ClaimPositionInMap(trans.position);
         }
         if (timeCount >= rof)
         {
@@ -160,6 +195,66 @@ public class CharacterControl : MonoBehaviour, IUnit
         
     }
 
+    private void UpLevelEffect()
+    {
+        var trailAfter = PoolManager.instance.GetPool<ObjectPoolControl>("UpLevelEffect");
+        trailAfter.OnPlay(new DataObjectPool()
+        {
+            timeLife = 1f,
+            position = trans.position,
+        });
+    }
+
+    #region Skills
+
+    private void Dash()
+    {
+        trailObj.SetActive(true);
+        dataBiding.Dash = true;
+        isSkilling = true;
+        float myFloat = 1;
+        int numberTrails = 10;
+        float timeAddTral = timeDash / numberTrails;
+        Debug.Log("timeAddTral " + timeAddTral);
+        DOTween.To(()=> myFloat, x=> myFloat = x, 4, timeAddTral).SetLoops(numberTrails).OnStepComplete(() =>
+        {
+            var trailAfter = PoolManager.instance.GetPool<ObjectPoolControl>("TrailAfter");
+            trailAfter.OnPlay(new DataObjectPool()
+            {
+                timeLife = 1.5f,
+                position = trans.position,
+                rotation =  Quaternion.identity
+            });
+        }).SetEase(Ease.Linear);
+        Debug.Log("timeDash " + timeDash);
+        var targetPosition = InGameManager.instance.ClaimPositionInMap(trans.position + trans.forward * dashDistance);
+        trans.DOMove(targetPosition, timeDash).OnComplete(() =>
+        {
+            isSkilling = false;
+            trailObj.SetActive(false);
+        }).SetEase(Ease.Linear);
+    }
+    
+    
+    
+    private void SkillOne()
+    {
+        dataBiding.Skill = 1;
+        isSkilling = true;
+    }
+    
+    private void SkillTwo()
+    {
+        dataBiding.Skill = 2;
+        isSkilling = true;
+    }
+    private void SkillThree()
+    {
+        dataBiding.Skill = 3;
+        isSkilling = true;
+    }
+    #endregion
+    
     private void OnAnimatorIK(int layerIndex)
     {
         Debug.LogError("ik");
@@ -258,7 +353,39 @@ public class CharacterControl : MonoBehaviour, IUnit
             e.enemyControl.ApplyDamage(attackData);
         }
     }
-    
+    public void CanMove()
+    {
+        isSkilling = false;
+    }
+
+    public void CasteSkillOne()
+    {
+        Debug.Log("CasteSkillOne");
+        var pwBall = PoolManager.instance.GetPool<PowerBulletControl>(pwBallName);
+        pwBall.Fire(poitToCastSkill.position, trans.right, 5, 10, new AttackData(){});
+    }
+    public void CasteSkillTwo()
+    {
+        Debug.Log("CasteSkillOne");
+        StartCoroutine(IEfireBall());
+    }
+
+    private IEnumerator IEfireBall()
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            int n = 8;
+            float angle = 380 / 8;
+            for (int i = 0; i < n; i++)
+            {
+                var q = Quaternion.LookRotation(trans.right, Vector3.up) * Quaternion.Euler(0, angle * i, 0);
+                var pwBall = PoolManager.instance.GetPool<PowerBulletControl>(pwBallNameSmall);
+                pwBall.Fire(trans.position, q * trans.right , 5, 30, new AttackData(){});
+            }
+            yield return new WaitForSeconds(.15f);   
+        }
+        
+    }
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
@@ -296,6 +423,10 @@ public class CharacterControl : MonoBehaviour, IUnit
     }
 
     public bool IsDead { get; set; }
+    public void OnSetup(UnitData data)
+    {
+        this.data = data;
+    }
 }
 
 public class EnemyTargetSelect: System.IComparable<EnemyTargetSelect>

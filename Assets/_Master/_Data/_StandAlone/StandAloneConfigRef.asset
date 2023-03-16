@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: StandAloneConfigRef
   m_EditorClassIdentifier: Assembly-CSharp::DataConfigRef
-  _configEnemy: {fileID: 11400000, guid: e46cfbd8059125248ab7c7a14986e499, type: 2}
+  configUnit: {fileID: 11400000, guid: 49e02c0abcef5b844afeea63126a7499, type: 2}
+  configWaves: {fileID: 11400000, guid: 2234647a7e23fe5468e37d00b633623d, type: 2}

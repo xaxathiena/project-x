@@ -5,12 +5,14 @@ using UnityEngine;
 
 public class UnitControlBase : FSMSystem, IUnit
 {
+    protected UnitData data;
     public virtual int uuid { get; set; }
     public virtual UnitSide unitSide { get; }
     public virtual float boderRange { get; }
     public virtual Vector3 position { get => transform.position;}
     public virtual Quaternion rotation {  get => transform.rotation; }
 
+    public  UnitData Data => data;
     public virtual void UnitSpawn()
     {
 
@@ -28,4 +30,8 @@ public class UnitControlBase : FSMSystem, IUnit
     }
 
     public bool IsDead { get; set; }
+    public virtual void OnSetup(UnitData data)
+    {
+        this.data = data;
+    }
 }

@@ -24,6 +24,10 @@ public class TowerController : MonoBehaviour, IUnit
     }
 
     public bool IsDead { get; set; }
+    public void OnSetup(UnitData data)
+    {
+        
+    }
 
     [Header("Setting parameter")] 
     public int numberBullet;
@@ -101,8 +105,8 @@ public class TowerController : MonoBehaviour, IUnit
 
     private int ComparePosition(IUnit x, IUnit y)
     {
-        return Vector3.Distance(y.position, this.transform.position) >
-               Vector3.Distance(y.position, this.transform.position)? 1: -1;
+        return y.position.DistanceSQR(this.transform.position) > 
+               x.position.DistanceSQR(this.transform.position)? 1: -1;
     }
     void OnDrawGizmos()
     {

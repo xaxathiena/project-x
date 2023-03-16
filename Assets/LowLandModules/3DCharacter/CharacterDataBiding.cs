@@ -5,11 +5,12 @@ using UnityEngine;
 public class CharacterDataBiding : MonoBehaviour
 {
     public Animator animator;
+    
     public float SpeedMove
     {
         set
         {
-          if(value>0)
+            if(value>0)
                 animator.applyRootMotion = false;
 
             animator.SetFloat(key_SpeedMove, value);
@@ -34,16 +35,50 @@ public class CharacterDataBiding : MonoBehaviour
             }
         }
     }
+
+    public int Skill
+    {
+        set
+        {
+            animator.SetFloat(key_SpeedMove, 0);
+            animator.applyRootMotion = true;    
+            animator.SetInteger(key_NumberSkill, value);
+            animator.SetTrigger(key_SkillTrigger);
+        }
+    }
+    public bool Dash
+    {
+        set
+        {
+            if(value)
+            {
+                animator.applyRootMotion = false;
+                animator.SetTrigger(key_Dash);
+            }
+        }
+    }
+    
     private int key_SpeedMove;
     private int key_indexCombo;
     private int key_Attack;
+
+    private int key_NumberSkill;
+    private int key_Dash;
+
+    private int key_SkillTrigger;
     // Start is called before the first frame update
     void Start()
     {
         key_SpeedMove = Animator.StringToHash("SpeedMove");
         key_indexCombo = Animator.StringToHash("indexCombo");
         key_Attack = Animator.StringToHash("Attack");
+        
+        key_NumberSkill = Animator.StringToHash("NumberSkill");
+        key_SkillTrigger = Animator.StringToHash("Skill");
+        key_Dash = Animator.StringToHash("Dash");
     }
+
+    
 }
 
 [System.Serializable]

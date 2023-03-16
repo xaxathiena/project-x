@@ -13,7 +13,7 @@ public class ConfigPrimarykeyCompare<T2> : ConfigCompare<T2> where T2 : class, n
     FieldInfo keyField;
     public ConfigPrimarykeyCompare(string keyFieldName)
     {
-        keyField = typeof(T2).GetField(keyFieldName);
+        keyField = typeof(T2).GetField(keyFieldName,  BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public );
     }
     public override int ICompareHandle(T2 x, T2 y)
     {

@@ -6,6 +6,7 @@ using UnityEngine.Serialization;
 
 public class ArcherDefaultCotrol : MonoBehaviour, IUnit
 {
+    protected UnitData data;
     [SerializeField] private string bulletName;
     [SerializeField] private Transform positionSpawnArror;
     [SerializeField]private Transform arrowTarget;
@@ -139,6 +140,10 @@ public class ArcherDefaultCotrol : MonoBehaviour, IUnit
     }
 
     public bool IsDead { get; set; }
+    public void OnSetup(UnitData data)
+    {
+        this.data = data;
+    }
 
     public IUnit GetTarget()
     {

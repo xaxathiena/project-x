@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BulletControl : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class BulletControl : MonoBehaviour
     public GameObject bulletPrefab;
     public GameObject muzzlePrefab;
     public GameObject impactPrefab;
+    public AnimationCurve curve;
+    public float heightPlus;
     /// <summary>
     /// Bullet
     /// </summary>
@@ -30,11 +33,17 @@ public class BulletControl : MonoBehaviour
     //     Fire(startPosition, targetPosition, speed);
     // }
     private AttackData data;
+    private bool isMove = false;
+    private float speed;
+    private Vector3 realPosition;
+    private float originalDistance;
     public void Fire(Vector3 startPosition, Vector3 targetPosition, float speed, AttackData data)
     {
+        isMove = false;
         this.data = data;
         this.startPosition = startPosition;
         this.targetPosition = targetPosition;
+        this.speed = speed;
         gameObject.SetActive(true);
         if (realBulletParticle == null)
         {
@@ -61,8 +70,9 @@ public class BulletControl : MonoBehaviour
         transform.localRotation = q;
         realBulletParticle.transform.localRotation= Quaternion.identity;
         var distance = Vector3.Distance(targetPosition, this.startPosition);
-        InGameManager.instance.StartCoroutine(IERun(distance / speed, 
-            Quaternion.LookRotation((startPosition - targetPosition ).normalized)));
+        originalDistance = transform.position.DistanceSQR(targetPosition);;
+        realPosition = transform.position;
+        isMove = true;
     }
     public void Spawn()
     {
@@ -89,10 +99,48 @@ public class BulletControl : MonoBehaviour
         realMuzzleParticle.transform.localScale= Vector3.one;
         realImpactParticle.transform.localScale= Vector3.one;
     }
+
+    private float distanceSQR;
+    private void Update()
+    {
+        if (isMove)
+        {
+            distanceSQR = transform.position.DistanceSQR(targetPosition);
+            realPosition = Vector3.Lerp(realPosition, targetPosition, Time.deltaTime * speed);
+            
+            transform.position = Vector3.Lerp(transform.position, 
+                realPosition + Vector3.up * curve.Evaluate(distanceSQR / originalDistance), Time.deltaTime * speed);
+            if (transform.position.DistanceSQR(targetPosition) < 0.01f)
+            {
+                var q = Quaternion.LookRotation((startPosition - targetPosition).normalized);
+                //Done
+                realMuzzleParticle.gameObject.SetActive(true);
+                realMuzzleParticle.transform.rotation = q;
+                realImpactParticle.gameObject.SetActive(true);
+                realMuzzleParticle.Play();
+                realImpactParticle.Play();
+                this.data.unit?.ApplyDamage(this.data);
+                StartCoroutine(IEWaitingImpactHide());
+                isMove = false;
+                // gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private IEnumerator IEWaitingImpactHide()
+    {
+        yield return new WaitForSeconds(0.3f);
+        gameObject.SetActive(false);
+    }
     private IEnumerator IERun(float duration, Quaternion q)
     {
         bool isDone = false;
-        transform.DOMove(targetPosition, duration).SetEase(Ease.Linear).OnComplete(() =>
+        float currentTime = 0f;
+        transform.DOMove(targetPosition, duration).SetEase(Ease.Linear).OnUpdate(() =>
+        {
+            currentTime += Time.deltaTime;
+            curve.Evaluate(currentTime / duration);
+        }).OnComplete(() =>
         {
             realMuzzleParticle.gameObject.SetActive(true);
             realMuzzleParticle.transform.rotation = q;

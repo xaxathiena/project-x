@@ -185,13 +185,17 @@ public class SnakeletControl : UnitControlBase
         Gizmos.DrawWireSphere(transform.position, detectRange);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
-        // if (moveState.path.corners.Length > 1)
-        // {
-        //     Gizmos.color = Color.yellow;
-        //     for (int i = 0; i < moveState.path.corners.Length - 1; i++)
-        //     {
-        //         Gizmos.DrawLine(moveState.path.corners[i], moveState.path.corners[i +1]);
-        //     }
-        // }    
+        if (Application.isPlaying)
+        {
+            if (moveState.path.corners.Length > 1)
+            {
+                Gizmos.color = Color.yellow;
+                for (int i = 0; i < moveState.path.corners.Length - 1; i++)
+                {
+                    Gizmos.DrawLine(moveState.path.corners[i], moveState.path.corners[i +1]);
+                }
+            }
+        }
+            
     }
 }

@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   records:
   - id: 1
-    idUnits: 01000000010000000100000001000000
+    meleUnits: 01000000
+    rangerUnits: 02000000
+    waveDuration: 10

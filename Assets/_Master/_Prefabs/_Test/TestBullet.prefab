@@ -78,10 +78,61 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPosition: {x: 0, y: 0, z: 0}
   targetPosition: {x: 5, y: 5, z: 0}
-  speed: 5
   bulletPrefab: {fileID: 4649196775700291757, guid: ac92fc48787ad5c4ebd4be179b477f8a,
     type: 3}
   muzzlePrefab: {fileID: 3564993737778466243, guid: 8cb851ec20d733e41a29be7b82509528,
     type: 3}
   impactPrefab: {fileID: 6838925035958063094, guid: a243ede5b09758142b90ff5893e9712e,
     type: 3}
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.629692
+      outSlope: 2.629692
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.11023317
+    - serializedVersion: 3
+      time: 0.049270418
+      value: 0.35156956
+      inSlope: 5.3526025
+      outSlope: 5.3526025
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.10377587
+      value: 0.65190446
+      inSlope: 3.3180146
+      outSlope: 3.3180146
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.61752737
+      outWeight: 0.0891133
+    - serializedVersion: 3
+      time: 0.4921688
+      value: 1.0033934
+      inSlope: -0.16968584
+      outSlope: -0.16968584
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.17376825
+      outWeight: 0.19160937
+    - serializedVersion: 3
+      time: 1.0016574
+      value: 0.0028153323
+      inSlope: -2.3761055
+      outSlope: -2.3761055
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.13878462
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 0
+    m_RotationOrder: 4
+  heightPlus: 10

@@ -14,9 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   records:
   - id: 1
-    name: CatBolt
+    name: cat
+    type: 0
     dame: 100
-    dps: 200
+    rof: 200
     health: 1000
     detectRange: 100
     attackRange: 10
+    speedMove: 2
+    boderRange: 2
+    bulletName: 
+    bulletSpeed: 0
+  - id: 2
+    name: snakesmall
+    type: 1
+    dame: 100
+    rof: 200
+    health: 1000
+    detectRange: 100
+    attackRange: 10
+    speedMove: 2
+    boderRange: 2
+    bulletName: testPool
+    bulletSpeed: 25

@@ -14,10 +14,14 @@ public class WavesRecord
     [JsonProperty, SerializeField] private int id;
     
     [JsonProperty, SerializeField, JsonConverter(typeof(JsonConverterList<int>))]
-    private List<int> idUnits;
-
+    private List<int> meleUnits;
+    [JsonProperty, SerializeField, JsonConverter(typeof(JsonConverterList<int>))]
+    private List<int> rangerUnits;
+    [JsonProperty, SerializeField] private float waveDuration;
     public int ID => id;
-    public List<int> IDUnits => idUnits;
+    public List<int> MeleUnits => meleUnits;
+    public List<int> RangerUnits => rangerUnits;
+    public float WaveDuration => waveDuration;
 }
 
 public class JsonConverterList<T>: JsonConverter

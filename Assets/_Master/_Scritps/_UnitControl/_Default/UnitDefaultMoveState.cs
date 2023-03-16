@@ -105,7 +105,7 @@ public class UnitDefaultMoveState: IState
             Quaternion.Lerp(this.parent.transform.localRotation, q, Time.deltaTime * 10);
 
         this.parent.controller.Move(this.parent.controller.transform.forward.normalized * Time.deltaTime *
-                                    speedMove);
+                                    parent.Data.config.SpeedMove);
         this.parent.dataBinding.Speed = speedMove;
     }
     public void OnLateUpdate()
