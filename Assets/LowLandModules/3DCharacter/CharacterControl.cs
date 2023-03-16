@@ -291,7 +291,7 @@ public class CharacterControl : MonoBehaviour, IUnit
         currentEnemy = null;
         IUnit enemy = null;
 
-        List<EnemyTargetSelect> lstarget = GetTarget(currentAnimationData.angleForce);
+        List<EnemyTargetSelect> lstarget = GetTarget(float.MinValue);
         lstarget.Sort();
         if(lstarget.Count>0)
         {
@@ -308,7 +308,6 @@ public class CharacterControl : MonoBehaviour, IUnit
         int enemyMask = 1 << 9;
         enemyInRange.Clear();
         UnitsManager.instance.GetUnitInRange(ref enemyInRange, trans.position, rangeDetect, unitSide );
-        
         // Collider[] hitColliders = Physics.OverlapSphere(trans.position, rangeDetect, enemyMask);
 
         List<EnemyTargetSelect> lstarget = new List<EnemyTargetSelect>();

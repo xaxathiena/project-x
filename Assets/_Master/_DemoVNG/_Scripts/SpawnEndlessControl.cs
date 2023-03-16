@@ -21,8 +21,9 @@ public class SpawnEndlessControl : MonoBehaviour
         currentNumberSpawn = startEnemyNumber;
         currentTimeToSpawnUnits = 0;
         currentTimeToUpgradeLevel = 0;
+        BootLoader.OnLoadConfigCompleteEvent += () => {SpawnUnits(); };
+        
     }
-
     private void Update()
     {
         currentTimeToUpgradeLevel += Time.deltaTime;
@@ -48,10 +49,7 @@ public class SpawnEndlessControl : MonoBehaviour
             var configUnit = ConfigManager.instance.ConfigUnit.GetRecordBykeySearch(enemiesID[Random.Range(0,enemiesID.Length)]);
             // var enemy = PoolManager.instance.GetPool<ObjectPoolControl>(configUnit.Name);
             var enemy = Instantiate(Resources.Load("_Units/" + configUnit.Name) as GameObject);
-            for (int i = 0; i < currentNumberSpawn; i++)
-            {
-                SpawnUnit(position, enemy, configUnit);
-            }
+            SpawnUnit(position, enemy, configUnit);
         }
         
     }

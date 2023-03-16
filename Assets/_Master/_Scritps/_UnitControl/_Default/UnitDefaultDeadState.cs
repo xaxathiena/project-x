@@ -1,5 +1,7 @@
 ﻿using StateMachine;
+using Unity.VisualScripting;
 using UnityEngine;
+using IState = StateMachine.IState;
 
 [System.Serializable]
 public class  UnitDefaultDeadState : IState
@@ -37,7 +39,8 @@ public class  UnitDefaultDeadState : IState
             currentDissolveAmount += Time.deltaTime;
             if (currentDissolveAmount >= 1)
             {
-                this.parent.gameObject.SetActive(false);
+                GameObject.Destroy(this.parent.gameObject);
+                // this.parent.gameObject.SetActive(false);
             }
             else
             {

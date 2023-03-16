@@ -246,8 +246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cd3ac548c22bc24cab035faaa020e29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemiesID: 0100000002000000
-  timeToSpawnUnits: 7
+  enemiesID: 0200000002000000
+  timeToSpawnUnits: 800000000
   timeUpgradeLevel: 60
   startEnemyNumber: 3
   numberInscreasePerLevel: 3

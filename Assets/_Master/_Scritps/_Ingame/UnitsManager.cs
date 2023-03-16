@@ -28,15 +28,16 @@ public class UnitsManager : Singleton<UnitsManager>
     {
         unit.uuid = currentUUID++;
         units.Add(unit);
+        Debug.Log("AddUnit");
     }
     public void RemoveUnit(IUnit unit)
     {
         unit.IsDead = true;
-        var unitIndex = units.FindIndex(i => i.uuid == unit.uuid);
-        if (unitIndex != -1)
-        {
-            units.RemoveAt(unitIndex);
-        }
+        //var unitDead = units.Find(i => i.uuid == unit.uuid);
+        units.Remove(unit);
+        // if (unitDead != null)
+        // {
+        // }
     }
     public void GetUnitInRange(ref List<IUnit> result, Vector3 center, float range, UnitSide side)
     {

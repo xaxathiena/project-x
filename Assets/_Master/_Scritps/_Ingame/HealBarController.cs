@@ -71,4 +71,9 @@ public class HealBarController : MonoBehaviour
         }
         transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.back,mainCamera.transform.rotation * Vector3.down);
     }
+
+    private void OnDestroy()
+    {
+        UnityLifeCircle.instance.UnRegisterUnityEvent(UnityEventType.Update, OnDeplay);
+    }
 }

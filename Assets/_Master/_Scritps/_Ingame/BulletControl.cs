@@ -110,7 +110,7 @@ public class BulletControl : MonoBehaviour
             
             transform.position = Vector3.Lerp(transform.position, 
                 realPosition + Vector3.up * curve.Evaluate(distanceSQR / originalDistance), Time.deltaTime * speed);
-            if (transform.position.DistanceSQR(targetPosition) < 0.01f)
+            if (realPosition.DistanceSQR(targetPosition) < 0.01f)
             {
                 var q = Quaternion.LookRotation((startPosition - targetPosition).normalized);
                 //Done
@@ -119,10 +119,10 @@ public class BulletControl : MonoBehaviour
                 realImpactParticle.gameObject.SetActive(true);
                 realMuzzleParticle.Play();
                 realImpactParticle.Play();
-                this.data.unit?.ApplyDamage(this.data);
-                StartCoroutine(IEWaitingImpactHide());
                 isMove = false;
-                // gameObject.SetActive(false);
+                gameObject.SetActive(false);
+                this.data.unit?.ApplyDamage(this.data);
+                //StartCoroutine(IEWaitingImpactHide());
             }
         }
     }

@@ -37,7 +37,8 @@ public class SnakeletDeadState: IState
             currentDissolveAmount += Time.deltaTime;
             if (currentDissolveAmount >= 1)
             {
-                this.parent.gameObject.SetActive(false);
+                GameObject.Destroy(this.parent.gameObject);
+                // this.parent.gameObject.SetActive(false);
             }
             else
             {

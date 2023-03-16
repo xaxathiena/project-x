@@ -27,23 +27,32 @@ public class InputManager : MonoBehaviour
 
     public void OnFire(InputAction.CallbackContext context)
     {
-        OnFireEvent?.Invoke();
+        Debug.LogWarning("OnFire - out");
+        if (context.performed)
+        {
+            Debug.LogWarning("OnFire - in");
+            OnFireEvent?.Invoke();
+        }
     }
     public void OnSkillThree(InputAction.CallbackContext context)
     {
-        OnSkillEvent?.Invoke(3);
+        if (context.performed)
+            OnSkillEvent?.Invoke(3);
     }
     public void OnSkillTwo(InputAction.CallbackContext context)
     {
-        OnSkillEvent?.Invoke(2);
+        if (context.performed)
+            OnSkillEvent?.Invoke(2);
     }
     public void OnSkillOne(InputAction.CallbackContext context)
     {
-        OnSkillEvent?.Invoke(1);
+        if (context.performed)
+            OnSkillEvent?.Invoke(1);
     }
     public void OnDash(InputAction.CallbackContext context)
     {
-        OnDashEvent?.Invoke();
+        if (context.performed)
+            OnDashEvent?.Invoke();
     }
     public void OnMovement(InputAction.CallbackContext context)
     {
