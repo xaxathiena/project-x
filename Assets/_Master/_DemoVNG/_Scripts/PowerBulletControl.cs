@@ -102,19 +102,6 @@ public class PowerBulletControl : MonoBehaviour
 
     private void OnTriggerEnterHandle(Collider other)
     {
-        // if(((1 << other.gameObject.layer) & collisionExplodeMask) != 0)
-        // {
-        //     var q = Quaternion.LookRotation(direction, Vector3.up);
-        //     //Done
-        //     realMuzzleParticle.gameObject.SetActive(true);
-        //     realMuzzleParticle.transform.rotation = q;
-        //     realImpactParticle.gameObject.SetActive(true);
-        //     realMuzzleParticle.Play();
-        //     realImpactParticle.Play();
-        //     this.data.unit?.ApplyDamage(this.data);
-        //     StartCoroutine(IEWaitingImpactHide());
-        //     isMove = false;
-        // }
         Debug.Log("Trigger" + other.name);
         if(((1 << other.gameObject.layer) & data.mask) != 0)
         {

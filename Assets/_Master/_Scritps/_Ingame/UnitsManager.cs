@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +7,57 @@ using UnityEngine.Serialization;
 
 public class UnitsManager : Singleton<UnitsManager>
 {
+    [SerializeField] private int initPlayerLevel;
+    [SerializeField] private int expPerLevel;
+    [SerializeField] private int expPerLevelPlus;
+    private float currentPlayerExp;
+    private float currentNextPlayerExp = 0;
     public List<IUnit> towers = new List<IUnit>();
     public List<IUnit> units = new List<IUnit>();
     private int currentUUID = 1;
+    private int numberEnemyDead = 0;
+    private int numberEnemyAlive = 0;
+
+    private int NumberEnemyDead
+    {
+        set
+        {
+            numberEnemyDead = value;
+            numberEnemyDead.TriggerEventData(DataPath.INGAME_ENEMY_DEAD);
+        }
+        get => numberEnemyDead;
+    }
+    private int NumberEnemyAlive
+    {
+        set
+        {
+            numberEnemyAlive = value;
+            numberEnemyAlive.TriggerEventData(DataPath.INGAME_ENEMY_ALIVE);
+        }
+        get => numberEnemyAlive;
+    }
+    private void Start()
+    {
+        SetPlayerNextLevel();
+    }
+
+    private void SetPlayerNextLevel()
+    {
+        currentPlayerExp = 0;
+        currentNextPlayerExp += expPerLevel + initPlayerLevel * expPerLevelPlus;
+        currentNextPlayerExp.TriggerEventData(DataPath.INGAME_PLAYER_NEXT_EXP);
+    }
+    private void AddExpPlayer(int exp)
+    {
+        currentPlayerExp += exp;
+        if (currentPlayerExp >= currentNextPlayerExp)
+        {
+            SetPlayerNextLevel();
+            initPlayerLevel++;
+            initPlayerLevel.TriggerEventData(DataPath.INGAME_PLAYER_UPLEVEL);
+        }
+        currentPlayerExp.TriggerEventData(DataPath.INGAME_PLAYER_EXP);
+    }
     public void AddTower(IUnit tower)
     {
         tower.uuid = currentUUID++;
@@ -28,16 +77,18 @@ public class UnitsManager : Singleton<UnitsManager>
     {
         unit.uuid = currentUUID++;
         units.Add(unit);
-        Debug.Log("AddUnit");
+        if (unit.unitSide == UnitSide.Enemy)
+        {
+            NumberEnemyAlive++;
+        }
     }
     public void RemoveUnit(IUnit unit)
     {
         unit.IsDead = true;
-        //var unitDead = units.Find(i => i.uuid == unit.uuid);
         units.Remove(unit);
-        // if (unitDead != null)
-        // {
-        // }
+        NumberEnemyDead++;
+        NumberEnemyAlive--;
+        AddExpPlayer(400);
     }
     public void GetUnitInRange(ref List<IUnit> result, Vector3 center, float range, UnitSide side)
     {

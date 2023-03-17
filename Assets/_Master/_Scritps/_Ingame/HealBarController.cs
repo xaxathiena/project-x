@@ -30,7 +30,7 @@ public class HealBarController : MonoBehaviour
         if (isAlwayShow)
         {
             gameObject.SetActive(true);
-            UnityLifeCircle.instance.RegisterUnityEvent(UnityEventType.Update, OnDeplay);
+            //UnityLifeCircle.instance.RegisterUnityEvent(UnityEventType.Update, OnDeplay);
         }
         else
         {
@@ -45,15 +45,15 @@ public class HealBarController : MonoBehaviour
         if (!isStartDelay)
         {
             isStartDelay = true;
-            if (!isAlwayShow)
-            {
-                gameObject.SetActive(true);
-                UnityLifeCircle.instance.RegisterUnityEvent(UnityEventType.Update, OnDeplay);
-            }
+            // if (!isAlwayShow)
+            // {
+            //     gameObject.SetActive(true);
+            //     UnityLifeCircle.instance.RegisterUnityEvent(UnityEventType.Update, OnDeplay);
+            // }
         }
     }
 
-    private void OnDeplay()
+    private void Update()
     {
         currentTimeDelay += Time.deltaTime;
         if (currentTimeDelay > maxTimeDelay)
@@ -62,18 +62,14 @@ public class HealBarController : MonoBehaviour
             if (Mathf.Approximately(delayHealthImg.fillAmount ,currentRatio))
             {
                 isStartDelay = false;
-                if (!isAlwayShow)
-                {
-                    gameObject.SetActive(false);
-                    UnityLifeCircle.instance.UnRegisterUnityEvent(UnityEventType.Update, OnDeplay);
-                }
+                // if (!isAlwayShow)
+                // {
+                //     gameObject.SetActive(false);
+                //     UnityLifeCircle.instance.UnRegisterUnityEvent(UnityEventType.Update, OnDeplay);
+                // }
             }
         }
-        transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.back,mainCamera.transform.rotation * Vector3.down);
-    }
-
-    private void OnDestroy()
-    {
-        UnityLifeCircle.instance.UnRegisterUnityEvent(UnityEventType.Update, OnDeplay);
+        if(transform !=null)
+            transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.back,mainCamera.transform.rotation * Vector3.down);
     }
 }

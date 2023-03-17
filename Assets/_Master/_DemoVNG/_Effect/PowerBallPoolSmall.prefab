@@ -50,7 +50,7 @@ MonoBehaviour:
   timeAlive: 5
   collisionExplodeMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   currentAliveTime: 0
   bulletPrefab: {fileID: 1942343336931824, guid: 026c9946142f74d4e83179b40a3e15c0,
     type: 3}

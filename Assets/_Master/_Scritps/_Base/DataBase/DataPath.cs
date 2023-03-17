@@ -5,7 +5,14 @@ using UnityEngine;
 public class DataPath
 {
     #region Ingame
-    public const string INGAME_PLAYER_LEVEL ="INGAME_PLAYER_LEVEL";
+    public const string INGAME_PLAYER_UPLEVEL ="INGAME_PLAYER_UPLEVEL";
+    public const string INGAME_PLAYER_EXP ="INGAME_PLAYER_EXP";
+    public const string INGAME_PLAYER_HEAL ="INGAME_PLAYER_HEAL";
+    public const string INGAME_PLAYER_MAX_HEAL ="INGAME_PLAYER_MAX_HEAL";
+    public const string INGAME_PLAYER_NEXT_EXP ="INGAME_PLAYER_NEXT_EXP";
+    public const string INGAME_ENEMY_DEAD ="INGAME_ENEMY_DEAD";
+    public const string INGAME_ENEMY_ALIVE ="INGAME_ENEMY_ALIVE";
+    public const string GAME_STATUS ="GAME_STATUS";
     #endregion
 
     #region Local

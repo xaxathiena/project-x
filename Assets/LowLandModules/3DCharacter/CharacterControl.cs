@@ -24,12 +24,15 @@ public class CharacterControl : MonoBehaviour, IUnit
     [Range(0.1f, 1f)]
     [SerializeField] private float timeDash = 0.1f;
 
+    [SerializeField] private LayerMask enemyMask;
+    [SerializeField] private BulletTriggerControl dashObjDetect;
     [SerializeField] private GameObject trailObj;
     private UnitData data;
     public CharacterController controller;
     public LayerMask maskBG;
     public Transform anchorFootTrackMove;
     public float rangeDetect;
+    public float rangeAttack;
     public CharacterDataBiding dataBiding;
     private Transform trans;
     private IUnit currentEnemy;
@@ -108,7 +111,7 @@ public class CharacterControl : MonoBehaviour, IUnit
     // Start is called before the first frame update
     void Start()
     {
-        
+        dashObjDetect.OnTriggerEnterEvent = OnDashAttackEnemyHandle;
         trans = transform;
         foreach(AnimationData e in animaCombo)
         {
@@ -119,6 +122,24 @@ public class CharacterControl : MonoBehaviour, IUnit
         InputManager.instance.OnDashEvent += OnDashHandle;
         UnitSpawn();
         healBarController.SetupHealth(currentHealth, 0, currentHealth);
+        currentHealth.TriggerEventData(DataPath.INGAME_PLAYER_HEAL);
+        maxHealth.TriggerEventData(DataPath.INGAME_PLAYER_MAX_HEAL);
+    }
+
+    private void OnDashAttackEnemyHandle(Collider other)
+    {
+        Debug.Log("Trigger" + other.name);
+        if(((1 << other.gameObject.layer) & enemyMask) != 0)
+        {
+            var unit =other.gameObject.GetComponent<IUnit>();
+            if (unit != null)
+            {
+                unit.ApplyDamage(new AttackData()
+                {
+                    damage =  100
+                });
+            }
+        }
     }
 
     private void OnDashHandle()
@@ -218,6 +239,7 @@ public class CharacterControl : MonoBehaviour, IUnit
 
     private void Dash()
     {
+        dashObjDetect.gameObject.SetActive(true);
         trailObj.SetActive(true);
         dataBiding.Dash = true;
         isSkilling = true;
@@ -241,13 +263,21 @@ public class CharacterControl : MonoBehaviour, IUnit
         {
             isSkilling = false;
             trailObj.SetActive(false);
+            dashObjDetect.gameObject.SetActive(false);
         }).SetEase(Ease.Linear);
     }
-    
-    
+
+    private IUnit unitForSkillOne;
     
     private void SkillOne()
     {
+        unitForSkillOne = GetTarget();
+        if(unitForSkillOne !=null)
+        {
+            var dir = unitForSkillOne.position - trans.position;
+            Quaternion q = Quaternion.LookRotation(dir, Vector3.up);
+            trans.localRotation = q;
+        }
         dataBiding.Skill = 1;
         isSkilling = true;
     }
@@ -291,7 +321,7 @@ public class CharacterControl : MonoBehaviour, IUnit
         currentEnemy = null;
         IUnit enemy = null;
 
-        List<EnemyTargetSelect> lstarget = GetTarget(float.MinValue);
+        List<EnemyTargetSelect> lstarget = GetTarget(float.MinValue, rangeDetect);
         lstarget.Sort();
         if(lstarget.Count>0)
         {
@@ -302,7 +332,7 @@ public class CharacterControl : MonoBehaviour, IUnit
     }
 
     private List<IUnit> enemyInRange = new List<IUnit>();
-    public List<EnemyTargetSelect> GetTarget(float dotLimit)
+    public List<EnemyTargetSelect> GetTarget(float dotLimit, float range)
     {
 
         int enemyMask = 1 << 9;
@@ -351,7 +381,7 @@ public class CharacterControl : MonoBehaviour, IUnit
     }
     private void AttackDamge()
     {
-        List<EnemyTargetSelect> ls = GetTarget(currentAnimationData.angleForce);
+        List<EnemyTargetSelect> ls = GetTarget(currentAnimationData.angleForce, rangeAttack);
         AttackData attackData = new AttackData
         {
             damage = dame,
@@ -372,7 +402,11 @@ public class CharacterControl : MonoBehaviour, IUnit
     {
         Debug.Log("CasteSkillOne");
         var pwBall = PoolManager.instance.GetPool<PowerBulletControl>(pwBallName);
-        pwBall.Fire(poitToCastSkill.position, trans.right, 5, 10, new AttackData(){});
+        pwBall.Fire(poitToCastSkill.position, poitToCastSkill.forward, 5, 10, new AttackData()
+        {
+            mask = enemyMask,
+            damage = 200,
+        });
     }
     public void CasteSkillTwo()
     {
@@ -390,7 +424,11 @@ public class CharacterControl : MonoBehaviour, IUnit
             {
                 var q = Quaternion.LookRotation(trans.right, Vector3.up) * Quaternion.Euler(0, angle * i, 0);
                 var pwBall = PoolManager.instance.GetPool<PowerBulletControl>(pwBallNameSmall);
-                pwBall.Fire(trans.position, q * trans.right , 5, 30, new AttackData(){});
+                pwBall.Fire(trans.position, q * trans.right , 5, 30, new AttackData()
+                {
+                    mask = enemyMask,
+                    damage = 400
+                });
             }
             yield return new WaitForSeconds(.15f);   
         }
@@ -429,12 +467,21 @@ public class CharacterControl : MonoBehaviour, IUnit
     {
         currentHealth -= data.damage;
         healBarController.SetupHealth(currentHealth, 0, maxHealth);
+        currentHealth.TriggerEventData(DataPath.INGAME_PLAYER_HEAL);
+        maxHealth.TriggerEventData(DataPath.INGAME_PLAYER_MAX_HEAL);
     }
 
     public bool IsDead { get; set; }
     public void OnSetup(UnitData data)
     {
         this.data = data;
+    }
+
+    private void OnDestroy()
+    {
+        InputManager.instance.OnFireEvent -=OnFireEvent;
+        InputManager.instance.OnSkillEvent -= OnSkillHandle;
+        InputManager.instance.OnDashEvent -= OnDashHandle;
     }
 }
 
@@ -472,5 +519,4 @@ public class EnemyTargetSelect: System.IComparable<EnemyTargetSelect>
             }
         }
     }
-  
 }

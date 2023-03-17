@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 [Serializable]
 public class SkillDefine
 {
+    public string skillName;
     public UnityEvent onClick;
     public float limitTime;
     public ButtonSkillControl control;
@@ -19,20 +20,28 @@ public class SkillDefine
         currentTime = limitTime;
         control.OnSetup(() =>
         {
-            currentTime = limitTime;
-            onClick?.Invoke();
+            if (currentTime <= 0)
+            {
+                onClick?.Invoke();
+                //ResetSkill();
+            }
         }, limitTime);
-        DataTrigger.RegisterValueChange(DataPath.INGAME_PLAYER_LEVEL, (obj) =>
+        DataTrigger.RegisterValueChange(DataPath.INGAME_PLAYER_UPLEVEL, (obj) =>
         {
             int playerLevel = (int)obj;
             control.IsLockSkill = levelRequire > playerLevel;
         });
         control.IsLockSkill = levelRequire > 1;
     }
+
     public void OnUpdateUI()
     {
         currentTime -= Time.deltaTime;
         control.CountDownTime = (int)currentTime;
+    }
+    public void ResetSkill()
+    {
+        currentTime = limitTime;
     }
 }
 public class InputManager : MonoBehaviour
@@ -40,7 +49,7 @@ public class InputManager : MonoBehaviour
     public static InputManager instance;
     private float _x, _y;
     private Vector2 contextMovement;
-    [SerializeField] private SkillDefine[] skills;
+    [SerializeField] private List<SkillDefine> skills;
     [SerializeField] private JoyStickInput moveJoystick;
     
     public static Vector3 moveDir = Vector3.zero;
@@ -53,18 +62,26 @@ public class InputManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-        // m_Controls = new SimpleControls();
-        // m_Controls.gameplay.
+        
+        DataTrigger.RegisterValueChange(DataPath.GAME_STATUS, (value) =>
+        {
+            
+            
+        });
+    }
+    
+    private void Start()
+    {
+        
     }
 
-    private void Start()
+    private void NewGame()
     {
         foreach (var skill in skills)
         {
             skill.Start();
         }
     }
-    
     void Update()
     {
         _x = contextMovement.x +  moveJoystick.moveDir.x;
@@ -125,15 +142,30 @@ public class InputManager : MonoBehaviour
 
     public void OnFireAction()
     {
-        OnFireEvent?.Invoke();
+        var fireSkillDefine = skills.Find(i => i.skillName == "Attack");
+        if (fireSkillDefine != null && fireSkillDefine.currentTime <= 0)
+        {
+            fireSkillDefine.ResetSkill();
+            OnFireEvent?.Invoke();
+        }
     }
     public void OnSkillAction(int index)
-    {
-        OnSkillEvent?.Invoke(index);
+    { 
+        var skillDefine = skills.Find(i => i.skillName == "Skill " + index);
+        if (skillDefine != null && skillDefine.currentTime <= 0)
+        {
+            skillDefine.ResetSkill();
+            OnSkillEvent?.Invoke(index);
+        }
     }
     public void OnDashEventAction()
-    {
-        OnDashEvent?.Invoke();
+    { 
+        var dashDefine = skills.Find(i => i.skillName == "Dash");
+        if (dashDefine != null && dashDefine.currentTime <= 0)
+        {
+            dashDefine.ResetSkill();
+            OnDashEvent?.Invoke();
+        }
     }
     public void OnMovement(InputAction.CallbackContext context)
     {
