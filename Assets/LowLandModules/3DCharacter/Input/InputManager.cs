@@ -2,14 +2,47 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+
+[Serializable]
+public class SkillDefine
+{
+    public UnityEvent onClick;
+    public float limitTime;
+    public ButtonSkillControl control;
+    public int levelRequire;
+    [HideInInspector] public float currentTime;
+
+    public void Start()
+    {
+        currentTime = limitTime;
+        control.OnSetup(() =>
+        {
+            currentTime = limitTime;
+            onClick?.Invoke();
+        }, limitTime);
+        DataTrigger.RegisterValueChange(DataPath.INGAME_PLAYER_LEVEL, (obj) =>
+        {
+            int playerLevel = (int)obj;
+            control.IsLockSkill = levelRequire > playerLevel;
+        });
+        control.IsLockSkill = levelRequire > 1;
+    }
+    public void OnUpdateUI()
+    {
+        currentTime -= Time.deltaTime;
+        control.CountDownTime = (int)currentTime;
+    }
+}
 public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
-    [SerializeField]
-    private JoyStickInput moveJoystick;
-
+    private float _x, _y;
     private Vector2 contextMovement;
+    [SerializeField] private SkillDefine[] skills;
+    [SerializeField] private JoyStickInput moveJoystick;
+    
     public static Vector3 moveDir = Vector3.zero;
     public event Action OnFireEvent;
     public event Action<int> OnSkillEvent;
@@ -23,64 +56,15 @@ public class InputManager : MonoBehaviour
         // m_Controls = new SimpleControls();
         // m_Controls.gameplay.
     }
-    private float _x, _y;
 
-    public void OnFire(InputAction.CallbackContext context)
+    private void Start()
     {
-        Debug.LogWarning("OnFire - out");
-        if (context.performed)
+        foreach (var skill in skills)
         {
-            Debug.LogWarning("OnFire - in");
-            OnFireEvent?.Invoke();
+            skill.Start();
         }
     }
-    public void OnSkillThree(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-            OnSkillEvent?.Invoke(3);
-    }
-    public void OnSkillTwo(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-            OnSkillEvent?.Invoke(2);
-    }
-    public void OnSkillOne(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-            OnSkillEvent?.Invoke(1);
-    }
-    public void OnDash(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-            OnDashEvent?.Invoke();
-    }
-    public void OnMovement(InputAction.CallbackContext context)
-    {
-        contextMovement.x = context.ReadValue<Vector2>().x;
-        contextMovement.y = context.ReadValue<Vector2>().y;
-        // _x = context.ReadValue<Vector2>().x + moveJoystick.moveDir.x;
-        // if(_x>0.1f)
-        // {
-        //     _x = 1;
-        // }
-        // else if(_x<-0.1f)
-        // {
-        //     _x = -1;
-        // }
-        // _y = context.ReadValue<Vector2>().y + moveJoystick.moveDir.y;
-        // if (_y > 0.1f)
-        // {
-        //     _y = 1;
-        // }
-        // else if (_y < -0.1f)
-        // {
-        //     _y = -1;
-        // }
-        // moveDir.x = _x;
-        // moveDir.z = _y;
-    }
-    // Update is called once per frame
-    #region Old version
+    
     void Update()
     {
         _x = contextMovement.x +  moveJoystick.moveDir.x;
@@ -103,9 +87,58 @@ public class InputManager : MonoBehaviour
         }
         moveDir.x = _x;
         moveDir.z = _y;
+        foreach (var skill in skills)
+        {
+            skill.OnUpdateUI();
+        }
     }
     
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            OnFireAction();
+        }
+    }
+    public void OnSkillThree(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnSkillAction(3);
+    }
 
-    #endregion
+    
+    public void OnSkillTwo(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnSkillAction(2);
+    }
+    public void OnSkillOne(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnSkillAction(1);
+    }
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            OnDashEventAction();
+    }
+
+    public void OnFireAction()
+    {
+        OnFireEvent?.Invoke();
+    }
+    public void OnSkillAction(int index)
+    {
+        OnSkillEvent?.Invoke(index);
+    }
+    public void OnDashEventAction()
+    {
+        OnDashEvent?.Invoke();
+    }
+    public void OnMovement(InputAction.CallbackContext context)
+    {
+        contextMovement.x = context.ReadValue<Vector2>().x;
+        contextMovement.y = context.ReadValue<Vector2>().y;
+    }
     
 }
