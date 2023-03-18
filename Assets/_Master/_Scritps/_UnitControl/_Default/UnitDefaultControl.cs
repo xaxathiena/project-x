@@ -16,6 +16,7 @@ public class UnitDefaultControl : FSMSystem, IUnit
     public UnitDefaultIdleState idleState;
     public UnitDefaultMoveState moveState;
     public UnitDefaultAttackState attackState;
+    public UnitDefaultKnockState  knockState;
     public UnitDefaultDeadState deadState;
     [Space(10)] 
     [SerializeField] private Animator amin;
@@ -64,6 +65,10 @@ public class UnitDefaultControl : FSMSystem, IUnit
         attackState.parent = this;
         RegisterState(attackState);
         
+        knockState = new UnitDefaultKnockState();
+        knockState.parent = this;
+        RegisterState(knockState);
+        
         deadState = new UnitDefaultDeadState();
         deadState.parent = this;
         RegisterState(deadState);
@@ -84,6 +89,12 @@ public class UnitDefaultControl : FSMSystem, IUnit
         currentStateStr = "GotoMove";
         GotoState(moveState, data);
     }
+    public void GotoKnock(params object[] data)
+    {
+        currentStateStr = "GotoKnock";
+        GotoState(knockState, data);
+    }
+    
     public void GotoDead(params object[] data)
     {
         currentStateStr = "GotoDead";
@@ -201,6 +212,10 @@ public class UnitDefaultControl : FSMSystem, IUnit
         {
             GotoDead();
         }
+        else
+        {
+            GotoKnock();
+        }
     }
 
     public bool IsDead { get; set; }
@@ -208,6 +223,8 @@ public class UnitDefaultControl : FSMSystem, IUnit
     {
         this.data = data;
     }
+
+    public GameObject obj { get => gameObject; }
 
     void OnDrawGizmos()
     {

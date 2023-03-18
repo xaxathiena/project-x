@@ -176,6 +176,8 @@ public class WizardDefaultController : MonoBehaviour, IUnit
         this.data = data;
     }
 
+    public GameObject obj { get => gameObject; }
+
     #endregion
     
 }

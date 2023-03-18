@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
+    [SerializeField] private SpawnEndlessControl spawnEndlessControl;
     private GameStatus gameStatus;
-
     public GameStatus GameStatus
     {
         private set
@@ -23,6 +23,7 @@ public class GameManager : Singleton<GameManager>
 
     public void OnEndGame()
     {
+        spawnEndlessControl.isSpawn = false;
         GameStatus = GameStatus.EndGame;
     }
     public void OnStartGame()

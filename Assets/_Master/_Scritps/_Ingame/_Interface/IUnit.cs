@@ -15,6 +15,7 @@ public interface IUnit
     void ApplyDamage(AttackData data);
     bool IsDead { get; set; }
     void OnSetup(UnitData data);
+    GameObject obj { get; }
 
 }
 

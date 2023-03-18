@@ -52,7 +52,7 @@ public class SnakeletMoveState: IState
         if (move)
         {
 
-            if (parent.CurrentTarget != null)
+            if (parent.CurrentTarget != null && parent.CurrentTarget.obj != null)
             {
                 var isInside = parent.position.IsPositionInRange(parent.CurrentTarget.position, parent.attackRange,
                     parent.CurrentTarget.boderRange);

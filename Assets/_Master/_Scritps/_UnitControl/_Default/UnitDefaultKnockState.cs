@@ -1,20 +1,22 @@
-﻿using StateMachine;
+using System.Collections;
+using System.Collections.Generic;
+using StateMachine;
 using UnityEngine;
 
-public class SnakeletSpawnState : IState
+public class UnitDefaultKnockState : IState
 {
-    [HideInInspector] public SnakeletControl parent;
-
-    private float currentTime;
-    
+    [HideInInspector] public UnitDefaultControl parent;
     public bool canTransitionToSelf { get; }
+    private float maxtimeKnock = 1f;
+    private float currentTimeKnock;
     public void Initialize(FSMSystem parent, params object[] datas)
     {
     }
 
     public void OnEnter(params object[] data)
     {
-        parent.dataBinding.Speed = 0f;
+        currentTimeKnock = 0f;
+        parent.dataBinding.KnockBack = true;
     }
 
     public void OnEnterFromSameState(params object[] data)
@@ -23,8 +25,8 @@ public class SnakeletSpawnState : IState
 
     public void OnUpdate()
     {
-        currentTime += Time.deltaTime;
-        if (currentTime > 1f)
+        currentTimeKnock += Time.deltaTime;
+        if (currentTimeKnock > maxtimeKnock)
         {
             parent.GotoIdle();
         }
@@ -48,6 +50,5 @@ public class SnakeletSpawnState : IState
 
     public void OnDrawGizmos()
     {
-        
     }
 }

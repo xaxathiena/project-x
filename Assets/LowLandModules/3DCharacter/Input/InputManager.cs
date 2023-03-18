@@ -15,6 +15,14 @@ public class SkillDefine
     public int levelRequire;
     [HideInInspector] public float currentTime;
 
+    public void Awake()
+    {
+        DataTrigger.RegisterValueChange(DataPath.INGAME_PLAYER_UPLEVEL, (obj) =>
+        {
+            int playerLevel = (int)obj;
+            control.IsLockSkill = levelRequire > playerLevel;
+        });
+    }
     public void Start()
     {
         currentTime = limitTime;
@@ -26,11 +34,6 @@ public class SkillDefine
                 //ResetSkill();
             }
         }, limitTime);
-        DataTrigger.RegisterValueChange(DataPath.INGAME_PLAYER_UPLEVEL, (obj) =>
-        {
-            int playerLevel = (int)obj;
-            control.IsLockSkill = levelRequire > playerLevel;
-        });
         control.IsLockSkill = levelRequire > 1;
     }
 
@@ -62,10 +65,17 @@ public class InputManager : MonoBehaviour
     void Awake()
     {
         instance = this;
-        
+        foreach (var skill in skills)
+        {
+            skill.Awake();
+        }
         DataTrigger.RegisterValueChange(DataPath.GAME_STATUS, (value) =>
         {
-            
+            GameStatus status = (GameStatus)value;
+            if (status == GameStatus.StartGame)
+            {
+                NewGame();
+            }
             
         });
     }

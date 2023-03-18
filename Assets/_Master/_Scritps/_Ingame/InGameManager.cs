@@ -22,17 +22,28 @@ public class InGameManager : Singleton<InGameManager>
     
     
     public IUnit MotherTreePosition => theMortherTree;
+    protected override void OnAwake()
+    {
+        DataTrigger.RegisterValueChange(DataPath.GAME_STATUS, (value) =>
+        {
+            GameStatus status = (GameStatus)value;
+            if (status == GameStatus.StartGame)
+            {
+                currentTime = 0;
+                if (characterPrefab != null)
+                {
+                    var go = Instantiate(characterPrefab);
+                    go.transform.position = characterPosition.position;
+                    targetCamera.target = go.transform;
+                    targetCamera.isFlowTarget = true;
+                }
+            }
+        });
+    }
 
     public void Start()
     {
-        currentTime = 0;
-        if (characterPrefab != null)
-        {
-            var go = Instantiate(characterPrefab);
-            go.transform.position = characterPosition.position;
-            targetCamera.target = go.transform;
-            targetCamera.isFlowTarget = true;
-        }
+        
     }
     
     

@@ -17,7 +17,7 @@ public class TargetCamControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isFlowTarget)
+        if(isFlowTarget && target != null)
             trans.position = target.position;
     }
 }

@@ -34,4 +34,6 @@ public class UnitControlBase : FSMSystem, IUnit
     {
         this.data = data;
     }
+
+    public GameObject obj { get => gameObject; }
 }

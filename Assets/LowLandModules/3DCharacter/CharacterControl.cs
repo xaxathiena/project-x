@@ -27,6 +27,7 @@ public class CharacterControl : MonoBehaviour, IUnit
     [SerializeField] private LayerMask enemyMask;
     [SerializeField] private BulletTriggerControl dashObjDetect;
     [SerializeField] private GameObject trailObj;
+    [SerializeField] private GameObject skill3Object;
     private UnitData data;
     public CharacterController controller;
     public LayerMask maskBG;
@@ -50,6 +51,7 @@ public class CharacterControl : MonoBehaviour, IUnit
     public float maxHealth= 1000;
     
     private bool isSkilling = false;
+    private bool isKnockBack = false;
     
     private bool IsFire
     {
@@ -144,7 +146,7 @@ public class CharacterControl : MonoBehaviour, IUnit
 
     private void OnDashHandle()
     {
-        if (!isSkilling)
+        if (!isSkilling && !isKnockBack)
         {
             Dash();
         }
@@ -152,7 +154,7 @@ public class CharacterControl : MonoBehaviour, IUnit
 
     private void OnSkillHandle(int skillIndex)
     {
-        if (!isSkilling)
+        if (!isSkilling && !isKnockBack)
         {
             switch (skillIndex)
             {
@@ -171,13 +173,14 @@ public class CharacterControl : MonoBehaviour, IUnit
 
     void OnFireEvent()
     {
-        if (IsFire || isSkilling)
+        if (IsFire || isSkilling || isKnockBack)
             return;
         IsFire = true;
       
     }
 
-
+    private float timeWaitingKnock = 0.15f;
+    private float currentTimeKnock = 0f;
     // Update is called once per frame
     void Update()
     {
@@ -192,7 +195,7 @@ public class CharacterControl : MonoBehaviour, IUnit
                 IsFire = false;
             }
         }
-        else if(!isSkilling)
+        else if(!isSkilling && !isKnockBack)
         {
             moveDir = InputManager.moveDir;
             if (moveDir.magnitude > 0)
@@ -222,7 +225,16 @@ public class CharacterControl : MonoBehaviour, IUnit
             currentEnemy = null;
 
         }
-        
+        //Kock
+        if (isKnockBack)
+        {
+            currentTimeKnock += Time.deltaTime;
+            if (currentTimeKnock > timeWaitingKnock)
+            {
+                currentTimeKnock = 0f;
+                isKnockBack = false;
+            }
+        }
     }
 
     private void UpLevelEffect()
@@ -291,6 +303,14 @@ public class CharacterControl : MonoBehaviour, IUnit
     {
         dataBiding.Skill = 3;
         isSkilling = true;
+        skill3Object.gameObject.SetActive(true);
+        StartCoroutine(HideSkill3());
+    }
+
+    private IEnumerator HideSkill3()
+    {
+        yield return new WaitForSeconds(10f);
+        skill3Object.gameObject.SetActive(false);
     }
     #endregion
     
@@ -469,13 +489,29 @@ public class CharacterControl : MonoBehaviour, IUnit
         healBarController.SetupHealth(currentHealth, 0, maxHealth);
         currentHealth.TriggerEventData(DataPath.INGAME_PLAYER_HEAL);
         maxHealth.TriggerEventData(DataPath.INGAME_PLAYER_MAX_HEAL);
+        if (!isSkilling)
+        {
+            currentTimeKnock = 0f;
+            isKnockBack = true;
+            dataBiding.KnockBack = true;
+        }
+        if (currentHealth <= 0)
+        {
+            GameManager.instance.OnEndGame();
+        }
     }
 
+    public void StopKnockBack()
+    {
+        isKnockBack = false;
+    }
     public bool IsDead { get; set; }
     public void OnSetup(UnitData data)
     {
         this.data = data;
     }
+
+    public GameObject obj { get => gameObject; }
 
     private void OnDestroy()
     {

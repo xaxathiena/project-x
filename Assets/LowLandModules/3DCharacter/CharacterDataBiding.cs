@@ -57,7 +57,17 @@ public class CharacterDataBiding : MonoBehaviour
             }
         }
     }
-    
+    public bool KnockBack
+    {
+        set
+        {
+            if(value)
+            {
+                animator.applyRootMotion = false;
+                animator.SetTrigger(key_KnockBack);
+            }
+        }
+    }
     private int key_SpeedMove;
     private int key_indexCombo;
     private int key_Attack;
@@ -66,6 +76,8 @@ public class CharacterDataBiding : MonoBehaviour
     private int key_Dash;
 
     private int key_SkillTrigger;
+
+    private int key_KnockBack;
     // Start is called before the first frame update
     void Start()
     {
@@ -76,6 +88,7 @@ public class CharacterDataBiding : MonoBehaviour
         key_NumberSkill = Animator.StringToHash("NumberSkill");
         key_SkillTrigger = Animator.StringToHash("Skill");
         key_Dash = Animator.StringToHash("Dash");
+        key_KnockBack = Animator.StringToHash("KnockBack");
     }
 
     

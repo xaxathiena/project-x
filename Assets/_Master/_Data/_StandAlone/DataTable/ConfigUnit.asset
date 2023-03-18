@@ -16,7 +16,7 @@ MonoBehaviour:
   - id: 1
     name: cat
     type: 0
-    dame: 100
+    dame: 50
     rof: 0.5
     health: 1000
     detectRange: 100
@@ -28,7 +28,7 @@ MonoBehaviour:
   - id: 2
     name: snakesmall
     type: 1
-    dame: 100
+    dame: 30
     rof: 0.3
     health: 1000
     detectRange: 100

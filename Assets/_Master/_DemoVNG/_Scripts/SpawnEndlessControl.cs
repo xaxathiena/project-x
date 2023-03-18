@@ -15,17 +15,37 @@ public class SpawnEndlessControl : MonoBehaviour
     private float currentTimeToUpgradeLevel ;
     private float currentTimeToSpawnUnits ;
     private int currentNumberSpawn;
+    public bool isSpawn = false;
+    private void Awake()
+    {
+        DataTrigger.RegisterValueChange(DataPath.GAME_STATUS, value =>
+        {
+            GameStatus status = (GameStatus)value;
+            Debug.Log("spawn endless unit status " + status);
+            if (status == GameStatus.StartGame)
+            {
+                isSpawn = true;
+                ResetParamerter();
+                StartCoroutine(SpawnUnits());
+            }
 
-    private void Start()
+            if (status == GameStatus.InMainMenu || status == GameStatus.EndGame)
+            {
+                isSpawn = false;
+            }
+        });
+    }
+
+    private void ResetParamerter()
     {
         currentNumberSpawn = startEnemyNumber;
         currentTimeToSpawnUnits = 0;
         currentTimeToUpgradeLevel = 0;
-        BootLoader.OnLoadConfigCompleteEvent += () => {SpawnUnits(); };
-        
+        //BootLoader.OnLoadConfigCompleteEvent += SpawnUnits;
     }
     private void Update()
     {
+        if(!isSpawn) return;;
         currentTimeToUpgradeLevel += Time.deltaTime;
         currentTimeToSpawnUnits += Time.deltaTime;
         if (currentTimeToUpgradeLevel > timeUpgradeLevel)
@@ -37,12 +57,13 @@ public class SpawnEndlessControl : MonoBehaviour
         if (currentTimeToSpawnUnits > timeToSpawnUnits)
         {
             currentTimeToSpawnUnits = 0;
-            SpawnUnits();
+            StartCoroutine(SpawnUnits());
         }
     }
 
-    private void SpawnUnits()
+    private IEnumerator SpawnUnits()
     {
+        yield return null;
         for (int j = 0; j < currentNumberSpawn; j++)
         {
             Vector3 position = InGameManager.instance.GetPositionInBoder();
@@ -50,6 +71,7 @@ public class SpawnEndlessControl : MonoBehaviour
             // var enemy = PoolManager.instance.GetPool<ObjectPoolControl>(configUnit.Name);
             var enemy = Instantiate(Resources.Load("_Units/" + configUnit.Name) as GameObject);
             SpawnUnit(position, enemy, configUnit);
+            yield return null;
         }
         
     }

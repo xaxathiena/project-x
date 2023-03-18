@@ -15,6 +15,7 @@ public class SnakeletControl : UnitControlBase
     public SnakeletIdleState idleState;
     public SnakeletMoveState moveState;
     public SnakeletAttackState attackState;
+    public SnakeletKnockState knockState;
     public SnakeletDeadState deadState;
     [Space(10)] 
     [SerializeField] private Animator amin;
@@ -72,6 +73,11 @@ public class SnakeletControl : UnitControlBase
         deadState.parent = this;
         RegisterState(deadState);
         
+        knockState = new SnakeletKnockState();
+        knockState.parent = this;
+        RegisterState(knockState);
+        
+        
         SetEntryState(spawState);
         SystemStart();
         healBarController.InitHealBar();
@@ -88,6 +94,11 @@ public class SnakeletControl : UnitControlBase
         currentStateStr = "GotoMove";
         GotoState(moveState, data);
     }
+    public void GotoKnock(params object[] data)
+    {
+        currentStateStr = "GotoKnock";
+        GotoState(knockState, data);
+    }
     public void GotoDead(params object[] data)
     {
         currentStateStr = "GotoDead";
@@ -96,7 +107,7 @@ public class SnakeletControl : UnitControlBase
         UnitsManager.instance.RemoveUnit(this);
         GotoState(deadState, data);
     }
-
+    
     private float currentHeal = 100;
     public void GotoAttack(params object[] data)
     {
@@ -201,6 +212,10 @@ public class SnakeletControl : UnitControlBase
         if (currentHeal <= 0)
         {
             GotoDead();
+        }
+        else
+        {
+            GotoKnock();
         }
     }
 

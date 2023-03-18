@@ -17,7 +17,7 @@ public class UnitsManager : Singleton<UnitsManager>
     private int currentUUID = 1;
     private int numberEnemyDead = 0;
     private int numberEnemyAlive = 0;
-
+    private int currentPlayerLevel;
     private int NumberEnemyDead
     {
         set
@@ -36,15 +36,52 @@ public class UnitsManager : Singleton<UnitsManager>
         }
         get => numberEnemyAlive;
     }
+
+    protected override void OnAwake()
+    {
+        DataTrigger.RegisterValueChange(DataPath.GAME_STATUS, value =>
+        {
+            GameStatus status = (GameStatus)value;
+            if (status == GameStatus.StartGame || status == GameStatus.EndGame)
+            {
+                ResetParameter();
+            }
+        });
+    }
+    
+    private void ResetParameter()
+    {
+        foreach (var u in towers)
+        {
+            GameObject.DestroyImmediate(u.obj);
+        }
+        foreach (var u in units)
+        {
+            GameObject.DestroyImmediate(u.obj);
+        }
+        towers.Clear();
+        units.Clear();
+        
+        currentNextPlayerExp = 0;
+        currentUUID = 1;
+        numberEnemyDead = 0;
+        numberEnemyAlive = 0;
+        currentPlayerLevel = initPlayerLevel;
+        
+        SetPlayerNextLevel();
+        currentPlayerLevel.TriggerEventData(DataPath.INGAME_PLAYER_UPLEVEL);
+    }
     private void Start()
     {
+        currentPlayerLevel = initPlayerLevel;
         SetPlayerNextLevel();
     }
 
     private void SetPlayerNextLevel()
     {
         currentPlayerExp = 0;
-        currentNextPlayerExp += expPerLevel + initPlayerLevel * expPerLevelPlus;
+        currentNextPlayerExp += expPerLevel + currentPlayerLevel * expPerLevelPlus;
+        currentPlayerExp.TriggerEventData(DataPath.INGAME_PLAYER_EXP);
         currentNextPlayerExp.TriggerEventData(DataPath.INGAME_PLAYER_NEXT_EXP);
     }
     private void AddExpPlayer(int exp)
@@ -53,8 +90,8 @@ public class UnitsManager : Singleton<UnitsManager>
         if (currentPlayerExp >= currentNextPlayerExp)
         {
             SetPlayerNextLevel();
-            initPlayerLevel++;
-            initPlayerLevel.TriggerEventData(DataPath.INGAME_PLAYER_UPLEVEL);
+            currentPlayerLevel++;
+            currentPlayerLevel.TriggerEventData(DataPath.INGAME_PLAYER_UPLEVEL);
         }
         currentPlayerExp.TriggerEventData(DataPath.INGAME_PLAYER_EXP);
     }

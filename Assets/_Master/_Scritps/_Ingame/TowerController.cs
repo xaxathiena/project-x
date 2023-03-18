@@ -29,6 +29,8 @@ public class TowerController : MonoBehaviour, IUnit
         
     }
 
+    public GameObject obj { get => gameObject; }
+
     [Header("Setting parameter")] 
     public int numberBullet;
     public float rof;

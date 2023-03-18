@@ -145,6 +145,8 @@ public class ArcherDefaultCotrol : MonoBehaviour, IUnit
         this.data = data;
     }
 
+    public GameObject obj { get => gameObject; }
+
     public IUnit GetTarget()
     {
         currentEnemy = null;

@@ -6,6 +6,7 @@ public class SnakeletDataBinding : MonoBehaviour
     private int key_Speed;
     private int key_IsDead;
     private int key_Attack;
+    private int key_KnockBack;
 
     /// <summary>
     /// 0 => idle
@@ -36,12 +37,23 @@ public class SnakeletDataBinding : MonoBehaviour
             }
         }
     }
+    public bool KnockBack
+    {
+        set
+        {
+            if (value)
+            {
+                animator.SetTrigger(key_KnockBack);
+            }
+        }
+    }
     public void Init(Animator animator)
     {
         this.animator = animator;
         key_Speed = Animator.StringToHash("Speed");
         key_IsDead = Animator.StringToHash("IsDead");
         key_Attack = Animator.StringToHash("Attack");
+        key_KnockBack = Animator.StringToHash("KnockBack");
     }
 
     public void OnUpdate()
