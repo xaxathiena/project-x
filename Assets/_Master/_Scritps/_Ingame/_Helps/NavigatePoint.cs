@@ -21,11 +21,13 @@ public class NavigatePoint : MonoBehaviour
 
     public void OnDrawGizmos()
     {
+#if  UNITY_EDITOR
         if (direction != null)
         {
             Handles.color = Color.white;
             Handles.DrawLine(direction.position, direction.position+  direction.forward * 2);
         }
+#endif
     }
 
     #region Mannual physic

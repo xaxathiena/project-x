@@ -182,10 +182,12 @@ public class ArcherDefaultCotrol : MonoBehaviour, IUnit
     }
     private void OnDrawGizmos()
     {
+#if  UNITY_EDITOR
         if(trans!=null)
         {
             UnityEditor.Handles.color = Color.yellow;
         }
+#endif
    
     }
 }

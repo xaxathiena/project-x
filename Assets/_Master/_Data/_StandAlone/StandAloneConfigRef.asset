@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 8a8e26e9f8a7f484aa31fce283db3d3d, type: 3}
   m_Name: StandAloneConfigRef
-  m_EditorClassIdentifier: Assembly-CSharp::DataConfigRef
+  m_EditorClassIdentifier: 
   configUnit: {fileID: 11400000, guid: 49e02c0abcef5b844afeea63126a7499, type: 2}
   configWaves: {fileID: 11400000, guid: 2234647a7e23fe5468e37d00b633623d, type: 2}

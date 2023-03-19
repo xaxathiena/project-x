@@ -13,11 +13,12 @@ public class PlayerInfoInGame : MonoBehaviour
     [SerializeField] private TextMeshProUGUI enemyAlive;
     [SerializeField] private Image currentExpImg;
     [SerializeField] private Image currentHealthPlayerImage;
-    [SerializeField] private int scorePerEnemy = 100;
+    private int scorePerEnemy = 100;
     private float currentPlayerExp;
     private float nextPlayerLevelExp;
     private float currentHealPlayer;
     private float currentMaxHealPlayer;
+    private int currentScore;
     private void Awake()
     {
         DataTrigger.RegisterValueChange(DataPath.INGAME_ENEMY_DEAD, (value) =>

@@ -28,7 +28,7 @@ public class SkillDefine
         currentTime = limitTime;
         control.OnSetup(() =>
         {
-            if (currentTime <= 0)
+            if (currentTime <= 0 && !CharacterControl.IsSkilling && !CharacterControl.IsKnockBack)
             {
                 onClick?.Invoke();
                 //ResetSkill();

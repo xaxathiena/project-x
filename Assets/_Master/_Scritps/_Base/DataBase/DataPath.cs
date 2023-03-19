@@ -13,6 +13,7 @@ public class DataPath
     public const string INGAME_ENEMY_DEAD ="INGAME_ENEMY_DEAD";
     public const string INGAME_ENEMY_ALIVE ="INGAME_ENEMY_ALIVE";
     public const string GAME_STATUS ="GAME_STATUS";
+    public const string HIGH_SCORE ="HIGH_SCORE";
     #endregion
 
     #region Local

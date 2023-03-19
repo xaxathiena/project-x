@@ -347,7 +347,7 @@ MonoBehaviour:
   pwBallName: powerBallLager
   pwBallNameSmall: powerBallSmall
   dashDistance: 8
-  timeDash: 0.1
+  timeDash: 0.4
   enemyMask:
     serializedVersion: 2
     m_Bits: 8
@@ -1799,7 +1799,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &281944563551999531
 Transform:
   m_ObjectHideFlags: 0
@@ -1808,8 +1808,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7764550968797257533}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.0395, z: 0.3003}
-  m_LocalScale: {x: 1, y: 2.025446, z: 0.3994}
+  m_LocalPosition: {x: 0, y: 1.0395, z: 0.3958}
+  m_LocalScale: {x: 2, y: 2.025446, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4893661498888495247}

@@ -19,8 +19,14 @@ public class GameManager : Singleton<GameManager>
     private void Start()
     {
         GameStatus = GameStatus.InMainMenu;
+        StartCoroutine(SetTargetFPS());
     }
 
+    private IEnumerator SetTargetFPS()
+    {
+        yield return null;
+        Application.targetFrameRate = 60;
+    }
     public void OnEndGame()
     {
         spawnEndlessControl.isSpawn = false;

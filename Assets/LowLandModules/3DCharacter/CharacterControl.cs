@@ -50,9 +50,10 @@ public class CharacterControl : MonoBehaviour, IUnit
     public float currentHealth = 1000;
     public float maxHealth= 1000;
     
-    private bool isSkilling = false;
-    private bool isKnockBack = false;
-    
+    private static bool isSkilling = false;
+    private static bool isKnockBack = false;
+    public static bool IsSkilling =>isSkilling;
+    public static bool IsKnockBack =>isKnockBack;
     private bool IsFire
     {
         set
@@ -264,7 +265,7 @@ public class CharacterControl : MonoBehaviour, IUnit
             var trailAfter = PoolManager.instance.GetPool<ObjectPoolControl>("TrailAfter");
             trailAfter.OnPlay(new DataObjectPool()
             {
-                timeLife = 1.5f,
+                timeLife = .5f,
                 position = trans.position,
                 rotation =  Quaternion.identity
             });
@@ -491,6 +492,7 @@ public class CharacterControl : MonoBehaviour, IUnit
         maxHealth.TriggerEventData(DataPath.INGAME_PLAYER_MAX_HEAL);
         if (!isSkilling)
         {
+            Debug.Log("isKnockBack");
             currentTimeKnock = 0f;
             isKnockBack = true;
             dataBiding.KnockBack = true;

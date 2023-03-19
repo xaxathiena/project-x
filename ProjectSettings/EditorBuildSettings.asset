@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Master/_Scenes/MainInGame.unity
     guid: 52969d783e29d484088da04da8ca3ced
   - enabled: 0
@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/_Master/_Scenes/_Demo/Shader/ShaderDemoMain.unity
     guid: a75a2a26291f2d54d9204c3f2f0f3f82
+  - enabled: 1
+    path: Assets/_Master/_Scenes/Demo.unity
+    guid: 2e6056e15d1d46a4491f18b80d039272
   m_configObjects: {}

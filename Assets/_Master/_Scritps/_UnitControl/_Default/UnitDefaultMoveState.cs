@@ -55,7 +55,7 @@ public class UnitDefaultMoveState: IState
         if (move)
         {
 
-            if (parent.CurrentTarget != null)
+            if (parent.CurrentTarget != null && parent.CurrentTarget.obj != null)
             {
                 var isInside = parent.position.IsPositionInRange(parent.CurrentTarget.position, parent.Data.config.AttackRange,
                     parent.CurrentTarget.boderRange);

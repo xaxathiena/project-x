@@ -19,7 +19,7 @@ public class InGameManager : Singleton<InGameManager>
     [SerializeField] private TargetCamControl targetCamera;
     [SerializeField] private Vector2 xBoder;
     [SerializeField] private Vector2 zBoder;
-    
+    public Transform CharacterSpawn => targetCamera.target;
     
     public IUnit MotherTreePosition => theMortherTree;
     protected override void OnAwake()

@@ -123,9 +123,12 @@ public class UnitsManager : Singleton<UnitsManager>
     {
         unit.IsDead = true;
         units.Remove(unit);
-        NumberEnemyDead++;
-        NumberEnemyAlive--;
-        AddExpPlayer(400);
+        if (unit.unitSide == UnitSide.Enemy)
+        {
+            NumberEnemyAlive--;
+            NumberEnemyDead++;
+        }
+        AddExpPlayer(50);
     }
     public void GetUnitInRange(ref List<IUnit> result, Vector3 center, float range, UnitSide side)
     {
